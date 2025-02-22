@@ -1,16 +1,16 @@
-package backend.academy.scrapper.controller;
+package backend.academy.scrapper.links;
 
-import backend.academy.scrapper.controller.model.AddLinkRequest;
-import backend.academy.scrapper.controller.model.LinkResponse;
-import backend.academy.scrapper.controller.model.ListLinksResponse;
-import backend.academy.scrapper.controller.model.RemoveLinkRequest;
+import backend.academy.scrapper.links.model.AddLinkRequest;
+import backend.academy.scrapper.links.model.LinkResponse;
+import backend.academy.scrapper.links.model.ListLinksResponse;
+import backend.academy.scrapper.links.model.RemoveLinkRequest;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class ScrapperController implements LinksApi {
+public class LinksController implements LinksApi {
 
     @Override
     public ResponseEntity<LinkResponse> linksDelete(Long tgChatId, RemoveLinkRequest body) {
@@ -26,6 +26,7 @@ public class ScrapperController implements LinksApi {
 
     @Override
     public ResponseEntity<LinkResponse> linksPost(Long tgChatId, AddLinkRequest body) {
+
         return null;
     }
 }

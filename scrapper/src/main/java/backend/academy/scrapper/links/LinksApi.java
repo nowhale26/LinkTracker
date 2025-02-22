@@ -3,9 +3,9 @@
  * https://github.com/swagger-api/swagger-codegen
  * Do not edit the class manually.
  */
-package backend.academy.scrapper.controller;
+package backend.academy.scrapper.links;
 
-import backend.academy.scrapper.controller.model.*;
+import backend.academy.scrapper.links.model.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;

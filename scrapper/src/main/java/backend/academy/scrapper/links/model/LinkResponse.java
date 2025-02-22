@@ -1,4 +1,4 @@
-package backend.academy.scrapper.controller.model;
+package backend.academy.scrapper.links.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;

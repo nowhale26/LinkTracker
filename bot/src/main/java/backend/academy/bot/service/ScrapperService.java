@@ -1,6 +1,7 @@
 package backend.academy.bot.service;
 
 import backend.academy.bot.service.model.AddLinkRequest;
+import backend.academy.bot.service.model.LinkResponse;
 import backend.academy.bot.service.model.ListLinksResponse;
 import backend.academy.bot.service.model.RemoveLinkRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -8,6 +9,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -35,12 +37,20 @@ public class ScrapperService {
             .block();
     }
 
-    public void addLink(Long userId, AddLinkRequest link) {
-
+    public LinkResponse addLink(Long userId, AddLinkRequest link) {
+        return scrapperWebClient
+            .post()
+            .uri("/links")
+            .contentType(MediaType.APPLICATION_JSON)
+            .header("Tg-Chat-Id", userId.toString())
+            .body(BodyInserters.fromValue(link))
+            .retrieve()
+            .bodyToMono(LinkResponse.class)
+            .block();
     }
 
-    public void removeLink(Long userId, RemoveLinkRequest link) {
-
+    public LinkResponse removeLink(Long userId, RemoveLinkRequest link) {
+        return null;
     }
 
     private static Mono<? extends Throwable> applyError(ClientResponse response) {

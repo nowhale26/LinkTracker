@@ -1,5 +1,6 @@
 package backend.academy.scrapper.links;
 
+import backend.academy.scrapper.common.exception.BusinessException;
 import backend.academy.scrapper.links.model.AddLinkRequest;
 import backend.academy.scrapper.links.model.LinkResponse;
 import backend.academy.scrapper.links.model.ListLinksResponse;
@@ -18,7 +19,7 @@ public class LinksController implements LinksApi {
     }
 
     @Override
-    public ResponseEntity<ListLinksResponse> linksGet(Long tgChatId) {
+    public ResponseEntity<Object> linksGet(Long tgChatId) {
         List<LinkResponse> links = List.of(new LinkResponse().url("https://github.com/central-university-dev/java-nowhale26"),
             new LinkResponse().url("https://stackoverflow.com/questions"));
         return new ResponseEntity<>(new ListLinksResponse().links(links), HttpStatus.OK);

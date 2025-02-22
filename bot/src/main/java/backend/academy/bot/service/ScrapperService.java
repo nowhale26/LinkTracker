@@ -67,5 +67,4 @@ public class ScrapperService {
                 .subscribe(body -> log.error("Response body: {}", body));
         }
     }
-
 }

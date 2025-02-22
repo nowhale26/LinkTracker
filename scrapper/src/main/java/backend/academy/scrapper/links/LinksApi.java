@@ -49,7 +49,7 @@ public interface LinksApi {
     @RequestMapping(value = "/links",
         produces = {"application/json"},
         method = RequestMethod.GET)
-    ResponseEntity<ListLinksResponse> linksGet(@Parameter(in = ParameterIn.HEADER, description = "", required = true, schema = @Schema()) @RequestHeader(value = "Tg-Chat-Id", required = true) Long tgChatId
+    ResponseEntity<Object> linksGet(@Parameter(in = ParameterIn.HEADER, description = "", required = true, schema = @Schema()) @RequestHeader(value = "Tg-Chat-Id", required = true) Long tgChatId
     );
 
 

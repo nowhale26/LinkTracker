@@ -18,7 +18,7 @@ public class BotListener {
     @Value("${app.telegram-token:1234}")
     private String token;
 
-    private static final String UNKNOWN_COMMAND ="Неизвестная комманда";
+    private static final String UNKNOWN_COMMAND ="Неизвестная команда";
     private static final String USE_COMMAND = "Используйте команду (/...)";
 
     private Map<String, MessageExecutor> executors = new HashMap<>();

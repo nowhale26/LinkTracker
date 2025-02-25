@@ -4,10 +4,10 @@ import java.util.Set;
 
 public interface LinksRepository {
 
-    void save(long userId, Link link);
-    void delete(long userId, Link link);
-    void delete(long userId);
-    Set<Link> get(long userId);
-    void register(long userId);
+    void save(Long userId, Link link);
+    void delete(Long userId, Link link);
+    void delete(Long userId);
+    Set<Link> get(Long userId);
+    void register(Long userId);
 
 }

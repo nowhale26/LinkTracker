@@ -1,5 +1,6 @@
 package backend.academy.bot.message.command;
 
+import backend.academy.bot.common.exception.ScrapperClientException;
 import backend.academy.bot.service.ScrapperService;
 import backend.academy.bot.service.model.ListLinksResponse;
 import com.pengrad.telegrambot.TelegramBot;
@@ -10,21 +11,28 @@ import org.springframework.stereotype.Component;
 
 
 @Component
-public class ListCommand extends Command{
+public class ListCommand extends Command {
 
-    public ListCommand(){
+    public ListCommand() {
         super("/list", "Выводит ссылки, которые отслеживаются");
     }
 
     @Override
     public void execute(Update update, TelegramBot bot) {
         Long chatId = update.message().chat().id();
-        ListLinksResponse response = service.getLinks(chatId);
-        StringBuilder message= new StringBuilder();
-        for(var link : response.getLinks()){
+        ListLinksResponse response;
+        try {
+            response = service.getLinks(chatId);
+        } catch (ScrapperClientException e) {
+            String message = e.getMessage();
+            bot.execute(new SendMessage(chatId, message));
+            return;
+        }
+        StringBuilder message = new StringBuilder();
+        for (var link : response.getLinks()) {
             message.append(link.getUrl()).append("\n");
         }
-        bot.execute(new SendMessage(chatId,message.toString()));
+        bot.execute(new SendMessage(chatId, message.toString()));
     }
 
 }

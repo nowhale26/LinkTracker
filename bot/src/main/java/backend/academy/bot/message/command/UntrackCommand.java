@@ -1,5 +1,6 @@
 package backend.academy.bot.message.command;
 
+import backend.academy.bot.common.exception.ScrapperClientException;
 import backend.academy.bot.message.MessageExecutor;
 import backend.academy.bot.service.model.RemoveLinkRequest;
 import com.pengrad.telegrambot.TelegramBot;
@@ -18,9 +19,22 @@ public class UntrackCommand extends Command implements MessageExecutor {
     public void execute(Update update, TelegramBot bot) {
         Long chatId = update.message().chat().id();
         RemoveLinkRequest request = new RemoveLinkRequest();
-        String url = update.message().text().split("\\s+")[1];
+        String[] updateMessage = update.message().text().split("\\s+");
+        String url;
+        if(updateMessage.length==2){
+            url = updateMessage[1];
+        } else{
+            bot.execute(new SendMessage(chatId,"После команды нужно написать ссылку на ресурс"));
+            return;
+        }
         request.link(url);
-        service.removeLink(chatId, request);
+        try{
+            service.removeLink(chatId, request);
+        } catch (ScrapperClientException e) {
+            String message = e.getMessage();
+            bot.execute(new SendMessage(chatId, message));
+            return;
+        }
         bot.execute(new SendMessage(chatId, "Ссылка удалена"));
     }
 

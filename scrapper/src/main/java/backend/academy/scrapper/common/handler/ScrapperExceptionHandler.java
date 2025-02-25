@@ -17,44 +17,35 @@ import java.util.List;
 @RestControllerAdvice(basePackages = {"backend.academy.scrapper"})
 @Slf4j
 public class ScrapperExceptionHandler {
-    @ExceptionHandler(BusinessException.class)
-    public ResponseEntity<ApiErrorResponse> handleBusinessException(final BusinessException exception) {
-        log.info("Data validation error", exception);
+    @ExceptionHandler({BusinessException.class, ScrapperException.class})
+    public ResponseEntity<ApiErrorResponse> handleScrapperException(final ScrapperException exception) {
+        log.info(exception.getMessage(), exception);
         var response = new ApiErrorResponse();
         response.setExceptionMessage(exception.getMessage());
         response.setCode(exception.getCode());
         response.setExceptionName(exception.getName());
         List<String> stackTrace = new ArrayList<>();
-        for(var trace : exception.getStackTrace()){
+        for (var trace : exception.getStackTrace()) {
             stackTrace.add(trace.toString());
         }
         response.setStacktrace(stackTrace);
-        return new ResponseEntity<>(response, HttpStatusCode.valueOf(400));
+        if (exception instanceof BusinessException) {
+            return new ResponseEntity<>(response, HttpStatusCode.valueOf(400));
+        } else {
+            return new ResponseEntity<>(response, HttpStatusCode.valueOf(500));
+        }
+
     }
 
-    @ExceptionHandler(ScrapperException.class)
-    public ResponseEntity<ApiErrorResponse> handleScrapperException(final ScrapperException exception) {
-        log.debug("Data validation error", exception);
-        var response = new ApiErrorResponse();
-        response.setExceptionMessage(exception.getMessage());
-        response.setCode(exception.getCode());
-        response.setExceptionName(exception.getName());
-        List<String> stackTrace = new ArrayList<>();
-        for(var trace : exception.getStackTrace()){
-            stackTrace.add(trace.toString());
-        }
-        response.setStacktrace(stackTrace);
-        return new ResponseEntity<>(response, HttpStatusCode.valueOf(500));
-    }
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiErrorResponse> handleException(final Exception exception) {
-        log.debug("Data validation error", exception);
+        log.info(exception.getMessage(), exception);
         var response = new ApiErrorResponse();
         response.setExceptionMessage(exception.getMessage());
         response.setCode("1");
         response.setExceptionName("System exception");
         List<String> stackTrace = new ArrayList<>();
-        for(var trace : exception.getStackTrace()){
+        for (var trace : exception.getStackTrace()) {
             stackTrace.add(trace.toString());
         }
         response.setStacktrace(stackTrace);

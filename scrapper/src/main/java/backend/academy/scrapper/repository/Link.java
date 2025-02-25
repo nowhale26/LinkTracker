@@ -1,5 +1,6 @@
 package backend.academy.scrapper.repository;
 
+import backend.academy.scrapper.links.model.AddLinkRequest;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,4 +12,5 @@ public class Link {
     private String url;
     private List<String> tags;
     private List<String> filters;
+
 }

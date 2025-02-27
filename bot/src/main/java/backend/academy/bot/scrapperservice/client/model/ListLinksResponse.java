@@ -10,10 +10,9 @@
  * Do not edit the class manually.
  */
 
-package backend.academy.bot.service.model;
+package backend.academy.bot.scrapperservice.client.model;
 
 import com.google.gson.annotations.SerializedName;
-import backend.academy.bot.service.model.LinkResponse;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.ArrayList;
 import java.util.List;

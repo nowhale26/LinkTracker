@@ -1,11 +1,11 @@
-package backend.academy.bot.service;
+package backend.academy.bot.scrapperservice.client;
 
 import backend.academy.bot.common.exception.ScrapperClientException;
-import backend.academy.bot.service.model.AddLinkRequest;
-import backend.academy.bot.service.model.ApiErrorResponse;
-import backend.academy.bot.service.model.LinkResponse;
-import backend.academy.bot.service.model.ListLinksResponse;
-import backend.academy.bot.service.model.RemoveLinkRequest;
+import backend.academy.bot.scrapperservice.client.model.AddLinkRequest;
+import backend.academy.bot.scrapperservice.client.model.ApiErrorResponse;
+import backend.academy.bot.scrapperservice.client.model.LinkResponse;
+import backend.academy.bot.scrapperservice.client.model.ListLinksResponse;
+import backend.academy.bot.scrapperservice.client.model.RemoveLinkRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -20,11 +20,11 @@ import reactor.core.scheduler.Schedulers;
 
 @Service
 @Slf4j
-public class ScrapperService {
+public class ScrapperClient {
 
     private final WebClient scrapperWebClient;
 
-    public ScrapperService(WebClient scrapperWebClient) {
+    public ScrapperClient(WebClient scrapperWebClient) {
         this.scrapperWebClient = scrapperWebClient;
     }
 
@@ -35,8 +35,8 @@ public class ScrapperService {
             .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .header("Tg-Chat-Id", userId.toString())
             .retrieve()
-            .onStatus(HttpStatusCode::is4xxClientError, ScrapperService::applyError)
-            .onStatus(HttpStatusCode::isError, ScrapperService::applyError) // throw a functional exception
+            .onStatus(HttpStatusCode::is4xxClientError, ScrapperClient::applyError)
+            .onStatus(HttpStatusCode::isError, ScrapperClient::applyError) // throw a functional exception
             .bodyToMono(ListLinksResponse.class)
             .block();
     }
@@ -49,8 +49,8 @@ public class ScrapperService {
             .header("Tg-Chat-Id", userId.toString())
             .body(BodyInserters.fromValue(link))
             .retrieve()
-            .onStatus(HttpStatusCode::is4xxClientError, ScrapperService::applyError)
-            .onStatus(HttpStatusCode::isError, ScrapperService::applyError)
+            .onStatus(HttpStatusCode::is4xxClientError, ScrapperClient::applyError)
+            .onStatus(HttpStatusCode::isError, ScrapperClient::applyError)
             .bodyToMono(LinkResponse.class)
             .block();
     }
@@ -63,8 +63,8 @@ public class ScrapperService {
             .header("Tg-Chat-Id", userId.toString())
             .body(BodyInserters.fromValue(link))
             .retrieve()
-            .onStatus(HttpStatusCode::is4xxClientError, ScrapperService::applyError)
-            .onStatus(HttpStatusCode::isError, ScrapperService::applyError)
+            .onStatus(HttpStatusCode::is4xxClientError, ScrapperClient::applyError)
+            .onStatus(HttpStatusCode::isError, ScrapperClient::applyError)
             .bodyToMono(LinkResponse.class)
             .block();
     }
@@ -74,8 +74,8 @@ public class ScrapperService {
             .post()
             .uri("/tg-chat/{id}",userId)
             .retrieve()
-            .onStatus(HttpStatusCode::is4xxClientError, ScrapperService::applyError)
-            .onStatus(HttpStatusCode::isError, ScrapperService::applyError)
+            .onStatus(HttpStatusCode::is4xxClientError, ScrapperClient::applyError)
+            .onStatus(HttpStatusCode::isError, ScrapperClient::applyError)
             .toBodilessEntity()
             .block();
     }
@@ -85,8 +85,8 @@ public class ScrapperService {
             .delete()
             .uri("/tg-chat/{id}",userId)
             .retrieve()
-            .onStatus(HttpStatusCode::is4xxClientError, ScrapperService::applyError)
-            .onStatus(HttpStatusCode::isError, ScrapperService::applyError)
+            .onStatus(HttpStatusCode::is4xxClientError, ScrapperClient::applyError)
+            .onStatus(HttpStatusCode::isError, ScrapperClient::applyError)
             .toBodilessEntity()
             .block();
     }

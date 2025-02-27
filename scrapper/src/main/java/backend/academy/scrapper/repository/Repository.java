@@ -54,4 +54,8 @@ public class Repository implements LinksRepository {
         Set<Link> links = new HashSet<>();
         repository.put(userId, links);
     }
+
+    public HashMap<Long, Set<Link>> getRepository() {
+        return repository;
+    }
 }

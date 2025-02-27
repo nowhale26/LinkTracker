@@ -2,7 +2,7 @@ package backend.academy.bot.message.command;
 
 import backend.academy.bot.common.exception.ScrapperClientException;
 import backend.academy.bot.message.MessageExecutor;
-import backend.academy.bot.service.model.RemoveLinkRequest;
+import backend.academy.bot.scrapperservice.client.model.RemoveLinkRequest;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;

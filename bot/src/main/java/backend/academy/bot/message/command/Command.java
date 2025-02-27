@@ -2,20 +2,18 @@ package backend.academy.bot.message.command;
 
 
 import backend.academy.bot.message.MessageExecutor;
-import backend.academy.bot.service.ScrapperService;
+import backend.academy.bot.scrapperservice.client.ScrapperClient;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Update;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 @Getter
 @Setter
 public class Command implements MessageExecutor {
     @Autowired
-    protected ScrapperService service;
+    protected ScrapperClient service;
 
     private String name;
     private String description;

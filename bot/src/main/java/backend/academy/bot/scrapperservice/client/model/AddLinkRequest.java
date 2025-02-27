@@ -10,7 +10,7 @@
  * Do not edit the class manually.
  */
 
-package backend.academy.bot.service.model;
+package backend.academy.bot.scrapperservice.client.model;
 
 import com.google.gson.annotations.SerializedName;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -18,17 +18,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 /**
- * LinkResponse
+ * AddLinkRequest
  */
 
 
-
-public class LinkResponse {
-  @SerializedName("id")
-  private Long id = null;
-
-  @SerializedName("url")
-  private String url = null;
+public class AddLinkRequest {
+  @SerializedName("link")
+  private String link = null;
 
   @SerializedName("tags")
   private List<String> tags = null;
@@ -36,48 +32,30 @@ public class LinkResponse {
   @SerializedName("filters")
   private List<String> filters = null;
 
-  public LinkResponse id(Long id) {
-    this.id = id;
+  public AddLinkRequest link(String link) {
+    this.link = link;
     return this;
   }
 
    /**
-   * Get id
-   * @return id
+   * Get link
+   * @return link
   **/
   @Schema(description = "")
-  public Long getId() {
-    return id;
+  public String getLink() {
+    return link;
   }
 
-  public void setId(Long id) {
-    this.id = id;
+  public void setLink(String link) {
+    this.link = link;
   }
 
-  public LinkResponse url(String url) {
-    this.url = url;
-    return this;
-  }
-
-   /**
-   * Get url
-   * @return url
-  **/
-  @Schema(description = "")
-  public String getUrl() {
-    return url;
-  }
-
-  public void setUrl(String url) {
-    this.url = url;
-  }
-
-  public LinkResponse tags(List<String> tags) {
+  public AddLinkRequest tags(List<String> tags) {
     this.tags = tags;
     return this;
   }
 
-  public LinkResponse addTagsItem(String tagsItem) {
+  public AddLinkRequest addTagsItem(String tagsItem) {
     if (this.tags == null) {
       this.tags = new ArrayList<String>();
     }
@@ -98,12 +76,12 @@ public class LinkResponse {
     this.tags = tags;
   }
 
-  public LinkResponse filters(List<String> filters) {
+  public AddLinkRequest filters(List<String> filters) {
     this.filters = filters;
     return this;
   }
 
-  public LinkResponse addFiltersItem(String filtersItem) {
+  public AddLinkRequest addFiltersItem(String filtersItem) {
     if (this.filters == null) {
       this.filters = new ArrayList<String>();
     }
@@ -133,26 +111,24 @@ public class LinkResponse {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    LinkResponse linkResponse = (LinkResponse) o;
-    return Objects.equals(this.id, linkResponse.id) &&
-        Objects.equals(this.url, linkResponse.url) &&
-        Objects.equals(this.tags, linkResponse.tags) &&
-        Objects.equals(this.filters, linkResponse.filters);
+    AddLinkRequest addLinkRequest = (AddLinkRequest) o;
+    return Objects.equals(this.link, addLinkRequest.link) &&
+        Objects.equals(this.tags, addLinkRequest.tags) &&
+        Objects.equals(this.filters, addLinkRequest.filters);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, url, tags, filters);
+    return Objects.hash(link, tags, filters);
   }
 
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class LinkResponse {\n");
+    sb.append("class AddLinkRequest {\n");
 
-    sb.append("    id: ").append(toIndentedString(id)).append("\n");
-    sb.append("    url: ").append(toIndentedString(url)).append("\n");
+    sb.append("    link: ").append(toIndentedString(link)).append("\n");
     sb.append("    tags: ").append(toIndentedString(tags)).append("\n");
     sb.append("    filters: ").append(toIndentedString(filters)).append("\n");
     sb.append("}");

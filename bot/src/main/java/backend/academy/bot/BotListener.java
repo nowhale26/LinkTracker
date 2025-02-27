@@ -18,20 +18,22 @@ public class BotListener {
     @Value("${app.telegram-token:1234}")
     private String token;
 
+    private final TelegramBot bot;
+
     private static final String UNKNOWN_COMMAND ="Неизвестная команда";
     private static final String USE_COMMAND = "Используйте команду (/...)";
 
     private Map<String, MessageExecutor> executors = new HashMap<>();
 
-    public BotListener(List<MessageExecutor> messageExecutors) {
+    public BotListener(List<MessageExecutor> messageExecutors, TelegramBot bot) {
         for (var messageExecutor : messageExecutors) {
             executors.put(messageExecutor.getExecutorName(), messageExecutor);
         }
+        this.bot = bot;
     }
 
     @PostConstruct
     public void init() {
-        TelegramBot bot = new TelegramBot(token);
 
         // Register for updates
         bot.setUpdatesListener(updates -> {

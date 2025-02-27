@@ -1,12 +1,10 @@
 package backend.academy.bot.message.command;
 
 import backend.academy.bot.common.exception.ScrapperClientException;
-import backend.academy.bot.service.ScrapperService;
-import backend.academy.bot.service.model.ListLinksResponse;
+import backend.academy.bot.scrapperservice.client.model.ListLinksResponse;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 

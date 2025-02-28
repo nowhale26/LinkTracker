@@ -8,6 +8,7 @@ import backend.academy.scrapper.repository.Repository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,27 +26,27 @@ public class SchedulerService {
 
     public HashMap<String, List<Long>> findUpdatedLinks() {
         HashMap<Long, Set<Link>> linksRepository = repository.getRepository();
-        if(linksRepository==null){
+        if (linksRepository == null) {
             return null;
         }
         HashMap<String, List<Long>> updatedLinks = new HashMap<>();
         for (var linksEntry : linksRepository.entrySet()) {
             for (var link : linksEntry.getValue()) {
-                GithubResponse response;
-                try{
-                    response = githubClient.checkLinkUpdates(link);
-                } catch (ScrapperException e){
+                ZonedDateTime update;
+                try {
+                    update = githubClient.checkLinkUpdate(link);
+                } catch (ScrapperException e) {
                     log.error(e.getMessage());
                     continue;
                 }
-                if (response.getUpdatedAt() != null) {
-                    if (response.getUpdatedAt().isAfter(link.getLastUpdated())) {
-                        link.setLastUpdated(response.getUpdatedAt());
+                if (update != null) {
+                    if (update.isAfter(link.getLastUpdated())) {
+                        link.setLastUpdated(update);
                         repository.save(linksEntry.getKey(), link);
                         List<Long> iDs;
-                        if(updatedLinks.containsKey(link.getUrl())){
+                        if (updatedLinks.containsKey(link.getUrl())) {
                             iDs = updatedLinks.get(link.getUrl());
-                        } else{
+                        } else {
                             iDs = new ArrayList<>();
                         }
                         iDs.add(linksEntry.getKey());

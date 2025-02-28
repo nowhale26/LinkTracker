@@ -1,6 +1,7 @@
 package backend.academy.scrapper.externalapi.github;
 
 import backend.academy.scrapper.common.exception.ScrapperException;
+import backend.academy.scrapper.externalapi.ExternalApiRequest;
 import backend.academy.scrapper.externalapi.github.models.GithubResponse;
 import backend.academy.scrapper.repository.Link;
 import lombok.extern.slf4j.Slf4j;
@@ -14,10 +15,11 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.ZonedDateTime;
 
 @Service
 @Slf4j
-public class GithubClient {
+public class GithubClient implements ExternalApiRequest {
     private final WebClient githubWebClient;
 
     @Value("${app.github-token:1234}")
@@ -27,9 +29,10 @@ public class GithubClient {
         this.githubWebClient = githubWebClient;
     }
 
-    public GithubResponse checkLinkUpdates(Link link) {
+    @Override
+    public ZonedDateTime checkLinkUpdate(Link link) {
         String githubLink = createGithubLink(link);
-        return githubWebClient
+        githubWebClient
             .get()
             .uri(githubLink)
             .header(HttpHeaders.AUTHORIZATION, "Bearer " + githubToken)
@@ -38,6 +41,7 @@ public class GithubClient {
             .onStatus(HttpStatusCode::isError, GithubClient::applyError)
             .bodyToMono(GithubResponse.class)
             .block();
+        return null;
     }
 
 

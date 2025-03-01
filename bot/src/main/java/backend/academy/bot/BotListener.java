@@ -5,10 +5,13 @@ import backend.academy.bot.message.command.Command;
 import backend.academy.bot.message.statecommand.StatefulMessageExecutor;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
+import com.pengrad.telegrambot.model.BotCommand;
 import com.pengrad.telegrambot.request.SendMessage;
+import com.pengrad.telegrambot.request.SetMyCommands;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,18 +28,28 @@ public class BotListener {
     private static final String UNKNOWN_COMMAND ="Неизвестная команда";
     private static final String USE_COMMAND = "Используйте команду (/...)";
 
-    private Map<String, MessageExecutor> executors = new HashMap<>();
+    private final BotCommand[] botCommands;
+
+    private final Map<String, MessageExecutor> executors = new HashMap<>();
     private final Map<Long, StatefulMessageExecutor> activeDialogs = new ConcurrentHashMap<>();
 
-    public BotListener(List<MessageExecutor> messageExecutors, TelegramBot bot) {
+    public BotListener(List<MessageExecutor> messageExecutors,List<Command> commands, TelegramBot bot) {
         for (var messageExecutor : messageExecutors) {
             executors.put(messageExecutor.getExecutorName(), messageExecutor);
+        }
+        botCommands = new BotCommand[commands.size()];
+        for(int i=0;i<botCommands.length;i++){
+            String name = commands.get(i).getName();
+            String description = commands.get(i).getDescription();
+            botCommands[i]=new BotCommand(name,description);
         }
         this.bot = bot;
     }
 
     @PostConstruct
     public void init() {
+
+        bot.execute(new SetMyCommands(botCommands));
 
         // Register for updates
         bot.setUpdatesListener(updates -> {

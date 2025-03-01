@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 @Getter
 @Setter
-public class Command implements MessageExecutor {
+public abstract class Command implements MessageExecutor {
     @Autowired
     protected ScrapperClient service;
 
@@ -24,9 +24,7 @@ public class Command implements MessageExecutor {
     }
 
     @Override
-    public void execute(Update update, TelegramBot bot) {
-
-    }
+    public abstract void execute(Update update, TelegramBot bot);
 
     @Override
     public String getExecutorName() {

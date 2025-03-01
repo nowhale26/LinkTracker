@@ -22,11 +22,11 @@ public class Link {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Link link = (Link) o;
-        return Objects.equals(url, link.url) && Objects.equals(tags, link.tags) && Objects.equals(filters, link.filters);
+        return Objects.equals(url, link.url);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(url, tags, filters);
+        return Objects.hashCode(url);
     }
 }

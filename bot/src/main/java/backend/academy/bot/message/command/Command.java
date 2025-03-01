@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 @Setter
 public abstract class Command implements MessageExecutor {
     @Autowired
-    protected ScrapperClient service;
+    protected ScrapperClient client;
 
     private String name;
     private String description;

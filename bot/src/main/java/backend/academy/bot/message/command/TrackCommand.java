@@ -1,7 +1,6 @@
 package backend.academy.bot.message.command;
 
 import backend.academy.bot.common.exception.ScrapperClientException;
-import backend.academy.bot.message.MessageExecutor;
 import backend.academy.bot.message.statecommand.StatefulCommand;
 import backend.academy.bot.scrapperservice.client.model.AddLinkRequest;
 import com.pengrad.telegrambot.TelegramBot;
@@ -76,15 +75,10 @@ public class TrackCommand extends StatefulCommand<TrackCommand.State> {
     }
 
     private void handleLinkInput(Long chatId, String url) {
-        try {
-            URI uri = new URI(url);
-            AddLinkRequest request = (AddLinkRequest) chatData.get(chatId);
-            request.link(url);
-            chatStates.put(chatId, State.WAITING_FOR_TAGS);
-            bot.execute(new SendMessage(chatId, "Введите теги (опционально, введите 1 для пропуска)"));
-        } catch (Exception e) {
-            bot.execute(new SendMessage(chatId, "Некорректная ссылка, попробуйте еще раз"));
-        }
+        AddLinkRequest request = (AddLinkRequest) chatData.get(chatId);
+        request.link(url);
+        chatStates.put(chatId, State.WAITING_FOR_TAGS);
+        bot.execute(new SendMessage(chatId, "Введите теги (опционально, введите 1 для пропуска)"));
     }
 
     private void moveToFilters(Long chatId) {
@@ -92,9 +86,9 @@ public class TrackCommand extends StatefulCommand<TrackCommand.State> {
         bot.execute(new SendMessage(chatId, "Настройте фильтры (опционально, введите 1 для завершения)"));
     }
 
-    private void completeTracking(Long chatId, AddLinkRequest request) {
+    protected void completeTracking(Long chatId, AddLinkRequest request) {
         try {
-            service.addLink(chatId, request);
+            client.addLink(chatId, request);
             bot.execute(new SendMessage(chatId, "Ссылка успешно добавлена"));
         } catch (ScrapperClientException e) {
             String message = e.getMessage();

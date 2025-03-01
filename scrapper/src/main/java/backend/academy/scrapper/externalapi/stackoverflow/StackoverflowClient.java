@@ -6,6 +6,7 @@ import backend.academy.scrapper.externalapi.stackoverflow.models.StackoverflowRe
 import backend.academy.scrapper.repository.Link;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -15,7 +16,7 @@ import reactor.core.scheduler.Schedulers;
 import java.time.ZonedDateTime;
 import java.util.Map;
 
-@Service
+@Component
 @Slf4j
 public class StackoverflowClient implements ExternalApi {
     private final WebClient stackoverflowWebClient;

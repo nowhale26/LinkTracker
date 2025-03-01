@@ -20,7 +20,7 @@ public class ListCommand extends Command {
         Long chatId = update.message().chat().id();
         ListLinksResponse response;
         try {
-            response = service.getLinks(chatId);
+            response = client.getLinks(chatId);
         } catch (ScrapperClientException e) {
             String message = e.getMessage();
             bot.execute(new SendMessage(chatId, message));

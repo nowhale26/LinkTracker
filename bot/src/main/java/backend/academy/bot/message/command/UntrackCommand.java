@@ -11,8 +11,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class UntrackCommand extends Command implements MessageExecutor {
 
-    public UntrackCommand(){
-        super("/untrack","Удаляет ссылку для отслеживания");
+    public UntrackCommand() {
+        super("/untrack", "Удаляет ссылку для отслеживания");
     }
 
     @Override
@@ -21,15 +21,15 @@ public class UntrackCommand extends Command implements MessageExecutor {
         RemoveLinkRequest request = new RemoveLinkRequest();
         String[] updateMessage = update.message().text().split("\\s+");
         String url;
-        if(updateMessage.length==2){
+        if (updateMessage.length == 2) {
             url = updateMessage[1];
-        } else{
-            bot.execute(new SendMessage(chatId,"После команды нужно написать ссылку на ресурс"));
+        } else {
+            bot.execute(new SendMessage(chatId, "После команды нужно написать ссылку на ресурс"));
             return;
         }
-        request.link(url);
-        try{
-            service.removeLink(chatId, request);
+        request.setLink(url);
+        try {
+            client.removeLink(chatId, request);
         } catch (ScrapperClientException e) {
             String message = e.getMessage();
             bot.execute(new SendMessage(chatId, message));

@@ -18,7 +18,6 @@ import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
 
 
 public class LinksServiceTest extends BaseTest {
-
     private final LinksService linksService;
     private final Repository repository;
 
@@ -104,6 +103,8 @@ public class LinksServiceTest extends BaseTest {
         }
 
     }
+
+
 
 
 }

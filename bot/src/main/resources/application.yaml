@@ -10,6 +10,8 @@ spring:
     hibernate:
       ddl-auto: validate
     open-in-view: false
+  main:
+    allow-bean-definition-overriding: true
 
 server:
   port: 8080

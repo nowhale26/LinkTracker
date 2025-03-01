@@ -21,10 +21,10 @@ import java.util.Set;
 public class SchedulerService {
 
     @Autowired
-    GithubClient githubClient;
+    private GithubClient githubClient;
 
     @Autowired
-    Repository repository;
+    private Repository repository;
 
     private final Map<String, ExternalApi> externalApiMap = new HashMap<>();
 
@@ -35,12 +35,12 @@ public class SchedulerService {
 
     }
 
-    public HashMap<String, List<Long>> findUpdatedLinks() {
-        HashMap<Long, Set<Link>> linksRepository = repository.getRepository();
+    public Map<String, List<Long>> findUpdatedLinks() {
+        Map<Long, Set<Link>> linksRepository = repository.getRepository();
         if (linksRepository == null) {
             return null;
         }
-        HashMap<String, List<Long>> updatedLinks = new HashMap<>();
+        Map<String, List<Long>> updatedLinks = new HashMap<>();
         for (var linksEntry : linksRepository.entrySet()) {
             for (var link : linksEntry.getValue()) {
                 ZonedDateTime update;

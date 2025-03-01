@@ -17,6 +17,6 @@ public class BotException extends RuntimeException {
     }
 
     public BotException(String message, String code, String name) {
-        this(message,code,name,null);
+        this(message, code, name, null);
     }
 }

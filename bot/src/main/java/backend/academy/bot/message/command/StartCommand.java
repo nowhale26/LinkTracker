@@ -18,7 +18,7 @@ public class StartCommand extends Command implements MessageExecutor {
     public void execute(Update update, TelegramBot bot) {
         Long chatId = update.message().chat().id();
         try {
-            service.registerChat(chatId);
+            client.registerChat(chatId);
         } catch (ScrapperClientException e) {
             bot.execute(new SendMessage(chatId, e.getMessage()));
         }

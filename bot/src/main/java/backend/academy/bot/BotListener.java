@@ -6,8 +6,10 @@ import backend.academy.bot.message.statecommand.StatefulMessageExecutor;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.BotCommand;
+import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.request.SetMyCommands;
+import com.pengrad.telegrambot.response.SendResponse;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -25,7 +27,7 @@ public class BotListener {
 
     private final TelegramBot bot;
 
-    private static final String UNKNOWN_COMMAND ="Неизвестная команда";
+    public static final String UNKNOWN_COMMAND = "Неизвестная команда";
     private static final String USE_COMMAND = "Используйте команду (/...)";
 
     private final BotCommand[] botCommands;
@@ -33,15 +35,15 @@ public class BotListener {
     private final Map<String, MessageExecutor> executors = new HashMap<>();
     private final Map<Long, StatefulMessageExecutor> activeDialogs = new ConcurrentHashMap<>();
 
-    public BotListener(List<MessageExecutor> messageExecutors,List<Command> commands, TelegramBot bot) {
+    public BotListener(List<MessageExecutor> messageExecutors, List<Command> commands, TelegramBot bot) {
         for (var messageExecutor : messageExecutors) {
             executors.put(messageExecutor.getExecutorName(), messageExecutor);
         }
         botCommands = new BotCommand[commands.size()];
-        for(int i=0;i<botCommands.length;i++){
+        for (int i = 0; i < botCommands.length; i++) {
             String name = commands.get(i).getName();
             String description = commands.get(i).getDescription();
-            botCommands[i]=new BotCommand(name,description);
+            botCommands[i] = new BotCommand(name, description);
         }
         this.bot = bot;
     }
@@ -53,36 +55,8 @@ public class BotListener {
 
         // Register for updates
         bot.setUpdatesListener(updates -> {
-            for (var update : updates) {
-                String text = update.message().text();
-                Long chatId = update.message().chat().id();
-                if (text.startsWith("/") && activeDialogs.isEmpty()) {
-                    String command = text.split("\\s+")[0];
-                    if(executors.containsKey(command)){
-                        MessageExecutor executor = executors.get(command);
-                        executor.execute(update, bot);
-                        if (executor instanceof StatefulMessageExecutor statefulExecutor) {
-                            if (statefulExecutor.isChatInDialog(chatId)) {
-                                activeDialogs.put(chatId, statefulExecutor);
-                            }
-                        }
-                    } else{
-                        bot.execute(new SendMessage(chatId, UNKNOWN_COMMAND));
-                    }
-                } else{
-                    StatefulMessageExecutor activeExecutor = activeDialogs.get(chatId);
-                    if (activeExecutor != null) {
-                        activeExecutor.handleUpdate(update);
-                        // Если диалог завершился, убираем из activeDialogs
-                        if (!activeExecutor.isChatInDialog(chatId)) {
-                            activeDialogs.remove(chatId);
-                        }
-                    } else {
-                        bot.execute(new SendMessage(chatId, USE_COMMAND));
-                    }
-                }
-            }
-            return UpdatesListener.CONFIRMED_UPDATES_ALL;
+            return handleUpdates(updates);
+
         }, e -> {
             if (e.response() != null) {
                 // got bad response from telegram
@@ -93,6 +67,38 @@ public class BotListener {
                 e.printStackTrace();
             }
         });
+    }
 
+    protected int handleUpdates(List<Update> updates) {
+        for (var update : updates) {
+            String text = update.message().text();
+            Long chatId = update.message().chat().id();
+            if (text.startsWith("/") && !activeDialogs.containsKey(chatId)) {
+                String command = text.split("\\s+")[0];
+                if (executors.containsKey(command)) {
+                    MessageExecutor executor = executors.get(command);
+                    executor.execute(update, bot);
+                    if (executor instanceof StatefulMessageExecutor statefulExecutor) {
+                        if (statefulExecutor.isChatInDialog(chatId)) {
+                            activeDialogs.put(chatId, statefulExecutor);
+                        }
+                    }
+                } else {
+                    SendResponse execute = bot.execute(new SendMessage(chatId, UNKNOWN_COMMAND));
+                }
+            } else {
+                StatefulMessageExecutor activeExecutor = activeDialogs.get(chatId);
+                if (activeExecutor != null) {
+                    activeExecutor.handleUpdate(update);
+                    // Если диалог завершился, убираем из activeDialogs
+                    if (!activeExecutor.isChatInDialog(chatId)) {
+                        activeDialogs.remove(chatId);
+                    }
+                } else {
+                    bot.execute(new SendMessage(chatId, USE_COMMAND));
+                }
+            }
+        }
+        return UpdatesListener.CONFIRMED_UPDATES_ALL;
     }
 }

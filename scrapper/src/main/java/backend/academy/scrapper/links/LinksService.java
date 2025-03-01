@@ -28,7 +28,7 @@ public class LinksService {
     private Repository repository;
 
     @Autowired
-    LinkValidator validator;
+    private LinkValidator validator;
 
     public LinkResponse addLink(Long userId, AddLinkRequest body) {
         Link link = new Link();

@@ -18,7 +18,9 @@ public class Repository implements LinksRepository {
         Set<Link> links;
         if (repository.containsKey(userId)) {
             links = repository.get(userId);
-
+            if(links.contains(link)){
+                links.remove(link);
+            }
         } else {
             links = new HashSet<>();
         }

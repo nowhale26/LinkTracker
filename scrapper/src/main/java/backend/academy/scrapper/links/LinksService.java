@@ -1,6 +1,7 @@
 package backend.academy.scrapper.links;
 
 import backend.academy.scrapper.common.exception.BusinessException;
+import backend.academy.scrapper.common.validator.LinkValidator;
 import backend.academy.scrapper.externalapi.stackoverflow.StackoverflowClient;
 import backend.academy.scrapper.links.model.AddLinkRequest;
 import backend.academy.scrapper.links.model.LinkResponse;
@@ -27,7 +28,7 @@ public class LinksService {
     private Repository repository;
 
     @Autowired
-    private StackoverflowClient stackoverflowClient;
+    LinkValidator validator;
 
     public LinkResponse addLink(Long userId, AddLinkRequest body) {
         Link link = new Link();
@@ -35,7 +36,8 @@ public class LinksService {
         link.setTags(body.getTags());
         link.setFilters(body.getFilters());
         link.setLastUpdated(ZonedDateTime.now());
-        validateURL(link);
+        extractSiteName(link);
+        validator.validateLink(link);
         repository.save(userId, link);
         return createResponse(userId, link);
     }
@@ -86,6 +88,18 @@ public class LinksService {
         linkResponse.setTags(link.getTags());
         linkResponse.setUrl(link.getUrl());
         return linkResponse;
+    }
+
+    private void extractSiteName(Link link) {
+        String urlString = link.getUrl();
+        try {
+            URI uri = new URI(urlString);
+            String host = uri.getHost();
+            String[] parts = host.split("\\.");
+            link.setSiteName(parts[parts.length - 2]);
+        } catch (Exception e) {
+            throw new BusinessException("Некорректная ссылка","400",e.getMessage());
+        }
     }
 
 

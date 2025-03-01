@@ -44,7 +44,7 @@ public class SchedulerService {
         for (var linksEntry : linksRepository.entrySet()) {
             for (var link : linksEntry.getValue()) {
                 ZonedDateTime update;
-                String siteName = extractSiteName(link);
+                String siteName = link.getSiteName();
                 if (siteName != null) {
                     try {
                         update = externalApiMap.get(siteName).checkLinkUpdate(link);
@@ -76,19 +76,4 @@ public class SchedulerService {
         return updatedLinks;
     }
 
-    private String extractSiteName(Link link) {
-        String urlString = link.getUrl();
-        try {
-            URI uri = new URI(urlString);
-            String host = uri.getHost();
-            if (host == null) {
-                return null;
-            }
-            String[] parts = host.split("\\.");
-            return parts[parts.length - 2];
-        } catch (Exception e) {
-            log.error("Некорректная ссылка, ошибка: {}", e.getMessage());
-            return null;
-        }
-    }
 }

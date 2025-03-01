@@ -22,7 +22,7 @@ public class LinksScheduler {
     BotClient botClient;
 
     //fixedDelay = 3600000, initialDelay = 3600000 раз в час
-    @Scheduled(fixedDelay = 60000, initialDelay = 60000)
+    @Scheduled(fixedDelay = 60000, initialDelay = 60000) //fixedDelay = 60000, initialDelay = 60000 раз в минуту
     public void checkAllUpdates() {
         HashMap<String, List<Long>> updatedLinks = service.findUpdatedLinks();
         if(updatedLinks!=null){

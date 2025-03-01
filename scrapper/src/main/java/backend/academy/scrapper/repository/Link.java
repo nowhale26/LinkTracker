@@ -15,6 +15,7 @@ public class Link {
     private List<String> tags;
     private List<String> filters;
     private ZonedDateTime lastUpdated;
+    private String siteName;
 
     @Override
     public boolean equals(Object o) {

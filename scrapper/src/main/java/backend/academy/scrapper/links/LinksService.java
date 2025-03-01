@@ -1,6 +1,7 @@
 package backend.academy.scrapper.links;
 
 import backend.academy.scrapper.common.exception.BusinessException;
+import backend.academy.scrapper.externalapi.stackoverflow.StackoverflowClient;
 import backend.academy.scrapper.links.model.AddLinkRequest;
 import backend.academy.scrapper.links.model.LinkResponse;
 import backend.academy.scrapper.links.model.ListLinksResponse;
@@ -17,12 +18,16 @@ import java.util.List;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
 public class LinksService {
 
     @Autowired
     private Repository repository;
+
+    @Autowired
+    private StackoverflowClient stackoverflowClient;
 
     public LinkResponse addLink(Long userId, AddLinkRequest body) {
         Link link = new Link();

@@ -1,7 +1,7 @@
 package backend.academy.scrapper.externalapi.github;
 
 import backend.academy.scrapper.common.exception.ScrapperException;
-import backend.academy.scrapper.externalapi.ExternalApiRequest;
+import backend.academy.scrapper.externalapi.ExternalApi;
 import backend.academy.scrapper.externalapi.github.models.GithubResponse;
 import backend.academy.scrapper.repository.Link;
 import lombok.extern.slf4j.Slf4j;
@@ -19,8 +19,10 @@ import java.time.ZonedDateTime;
 
 @Service
 @Slf4j
-public class GithubClient implements ExternalApiRequest {
+public class GithubClient implements ExternalApi {
     private final WebClient githubWebClient;
+
+    private final String siteName = "github";
 
     @Value("${app.github-token:1234}")
     private String githubToken;
@@ -31,32 +33,41 @@ public class GithubClient implements ExternalApiRequest {
 
     @Override
     public ZonedDateTime checkLinkUpdate(Link link) {
-        String githubLink = createGithubLink(link);
-        githubWebClient
+        String requestLink = createRequestLink(link);
+        GithubResponse response = githubWebClient
             .get()
-            .uri(githubLink)
+            .uri(requestLink)
             .header(HttpHeaders.AUTHORIZATION, "Bearer " + githubToken)
             .retrieve()
             .onStatus(HttpStatusCode::is4xxClientError, GithubClient::applyError)
             .onStatus(HttpStatusCode::isError, GithubClient::applyError)
             .bodyToMono(GithubResponse.class)
             .block();
-        return null;
+        if (response != null) {
+            return response.getUpdatedAt();
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public String getSiteName() {
+        return siteName;
     }
 
 
-    private String createGithubLink(Link link){
+    private String createRequestLink(Link link) {
         String url = link.getUrl();
-        try{
+        try {
             return new URI(url).getPath();
         } catch (URISyntaxException e) {
-            throw new ScrapperException("Некорректный синтаксис ссылки","500","Ошибка URI");
+            throw new ScrapperException("Некорректный синтаксис ссылки", "500", "Ошибка URI");
         }
     }
 
     private static Mono<? extends Throwable> applyError(ClientResponse response) {
         logResponse(response);
-        return response.bodyToMono(String.class).flatMap(error -> Mono.error(new ScrapperException(error,response.statusCode().toString())));
+        return response.bodyToMono(String.class).flatMap(error -> Mono.error(new ScrapperException(error, response.statusCode().toString())));
     }
 
     private static void logResponse(ClientResponse response) {

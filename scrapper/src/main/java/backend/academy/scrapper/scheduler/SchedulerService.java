@@ -1,17 +1,19 @@
 package backend.academy.scrapper.scheduler;
 
 import backend.academy.scrapper.common.exception.ScrapperException;
+import backend.academy.scrapper.externalapi.ExternalApi;
 import backend.academy.scrapper.externalapi.github.GithubClient;
-import backend.academy.scrapper.externalapi.github.models.GithubResponse;
 import backend.academy.scrapper.repository.Link;
 import backend.academy.scrapper.repository.Repository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.net.URI;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Slf4j
@@ -24,6 +26,15 @@ public class SchedulerService {
     @Autowired
     Repository repository;
 
+    private final Map<String, ExternalApi> externalApiMap = new HashMap<>();
+
+    public SchedulerService(List<ExternalApi> externalApiList) {
+        for (var externalApi : externalApiList) {
+            externalApiMap.put(externalApi.getSiteName(), externalApi);
+        }
+
+    }
+
     public HashMap<String, List<Long>> findUpdatedLinks() {
         HashMap<Long, Set<Link>> linksRepository = repository.getRepository();
         if (linksRepository == null) {
@@ -33,28 +44,51 @@ public class SchedulerService {
         for (var linksEntry : linksRepository.entrySet()) {
             for (var link : linksEntry.getValue()) {
                 ZonedDateTime update;
-                try {
-                    update = githubClient.checkLinkUpdate(link);
-                } catch (ScrapperException e) {
-                    log.error(e.getMessage());
-                    continue;
-                }
-                if (update != null) {
-                    if (update.isAfter(link.getLastUpdated())) {
-                        link.setLastUpdated(update);
-                        repository.save(linksEntry.getKey(), link);
-                        List<Long> iDs;
-                        if (updatedLinks.containsKey(link.getUrl())) {
-                            iDs = updatedLinks.get(link.getUrl());
-                        } else {
-                            iDs = new ArrayList<>();
+                String siteName = extractSiteName(link);
+                if (siteName != null) {
+                    try {
+                        update = externalApiMap.get(siteName).checkLinkUpdate(link);
+                    } catch (ScrapperException e) {
+                        log.error(e.getMessage());
+                        continue;
+                    } catch (NullPointerException e) {
+                        log.error("Неправильное имя сайта");
+                        continue;
+                    }
+                    if (update != null) {
+                        if (update.isAfter(link.getLastUpdated())) {
+                            link.setLastUpdated(update);
+                            repository.save(linksEntry.getKey(), link);
+                            List<Long> iDs;
+                            if (updatedLinks.containsKey(link.getUrl())) {
+                                iDs = updatedLinks.get(link.getUrl());
+                            } else {
+                                iDs = new ArrayList<>();
+                            }
+                            iDs.add(linksEntry.getKey());
+                            updatedLinks.put(link.getUrl(), iDs);
                         }
-                        iDs.add(linksEntry.getKey());
-                        updatedLinks.put(link.getUrl(), iDs);
                     }
                 }
+
             }
         }
         return updatedLinks;
+    }
+
+    private String extractSiteName(Link link) {
+        String urlString = link.getUrl();
+        try {
+            URI uri = new URI(urlString);
+            String host = uri.getHost();
+            if (host == null) {
+                return null;
+            }
+            String[] parts = host.split("\\.");
+            return parts[parts.length - 2];
+        } catch (Exception e) {
+            log.error("Некорректная ссылка, ошибка: {}", e.getMessage());
+            return null;
+        }
     }
 }

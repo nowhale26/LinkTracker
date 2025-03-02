@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class UpdatesController implements UpdatesApi{
+public class UpdatesController implements UpdatesApi {
 
     @Autowired
     UpdatesService service;

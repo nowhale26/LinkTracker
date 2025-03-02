@@ -4,9 +4,9 @@ import backend.academy.scrapper.repository.Link;
 import org.springframework.stereotype.Component;
 
 @Component
-public class GithubLinkValidator implements ExternalApiValidator{
+public class GithubLinkValidator implements ExternalApiValidator {
 
-    private final String siteName = "github";
+    private static final String siteName = "github";
 
     @Override
     public boolean validateLink(Link link) {

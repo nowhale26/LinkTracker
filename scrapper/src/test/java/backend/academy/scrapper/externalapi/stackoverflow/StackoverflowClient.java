@@ -14,15 +14,13 @@ import org.springframework.stereotype.Component;
 public class StackoverflowClient implements ExternalApi {
     private final String siteName = "stackoverflow";
 
-
-
     @Override
     public ZonedDateTime checkLinkUpdate(Link link) {
-        if("https://stackoverflow.com/questions/1/a".equals(link.getUrl())){
+        if ("https://stackoverflow.com/questions/1/a".equals(link.getUrl())) {
             return ZonedDateTime.now().plusHours(5);
-        } else if("https://stackoverflow.com/questions/2/b".equals(link.getUrl())){
-            throw new ScrapperException(siteName,"400","Некорректный запрос");
-        } else{
+        } else if ("https://stackoverflow.com/questions/2/b".equals(link.getUrl())) {
+            throw new ScrapperException(siteName, "400", "Некорректный запрос");
+        } else {
             return ZonedDateTime.now().minusHours(5);
         }
     }
@@ -31,6 +29,4 @@ public class StackoverflowClient implements ExternalApi {
     public String getSiteName() {
         return siteName;
     }
-
-
 }

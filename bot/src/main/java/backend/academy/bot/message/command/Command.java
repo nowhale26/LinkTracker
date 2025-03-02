@@ -1,6 +1,5 @@
 package backend.academy.bot.message.command;
 
-
 import backend.academy.bot.message.MessageExecutor;
 import backend.academy.bot.scrapperservice.client.ScrapperClient;
 import com.pengrad.telegrambot.TelegramBot;
@@ -18,7 +17,7 @@ public abstract class Command implements MessageExecutor {
     private String name;
     private String description;
 
-    public Command(String name, String description){
+    public Command(String name, String description) {
         this.name = name;
         this.description = description;
     }

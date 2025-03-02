@@ -37,5 +37,4 @@ public class UntrackCommand extends Command implements MessageExecutor {
         }
         bot.execute(new SendMessage(chatId, "Ссылка удалена"));
     }
-
 }

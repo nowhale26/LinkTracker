@@ -7,6 +7,6 @@ import org.springframework.stereotype.Component;
 @Component
 public interface MessageExecutor {
     void execute(Update update, TelegramBot bot);
-    String getExecutorName();
 
+    String getExecutorName();
 }

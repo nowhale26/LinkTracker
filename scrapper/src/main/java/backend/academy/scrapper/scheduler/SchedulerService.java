@@ -5,10 +5,6 @@ import backend.academy.scrapper.externalapi.ExternalApi;
 import backend.academy.scrapper.externalapi.github.GithubClient;
 import backend.academy.scrapper.repository.Link;
 import backend.academy.scrapper.repository.Repository;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import java.net.URI;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,6 +12,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
@@ -33,7 +32,6 @@ public class SchedulerService {
         for (var externalApi : externalApiList) {
             externalApiMap.put(externalApi.getSiteName(), externalApi);
         }
-
     }
 
     public Map<String, List<Long>> findUpdatedLinks() {
@@ -53,10 +51,7 @@ public class SchedulerService {
                     try {
                         update = externalApiMap.get(siteName).checkLinkUpdate(link);
                     } catch (ScrapperException e) {
-                        log.error(e.getMessage());
-                        continue;
-                    } catch (NullPointerException e) {
-                        log.error("Неправильное имя сайта");
+                        log.error("Error message: {}", e.getMessage());
                         continue;
                     }
                     if (update != null && update.isAfter(link.getLastUpdated())) {
@@ -78,5 +73,4 @@ public class SchedulerService {
 
         return updatedLinks;
     }
-
 }

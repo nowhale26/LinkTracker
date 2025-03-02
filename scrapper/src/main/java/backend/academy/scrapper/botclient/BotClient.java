@@ -21,33 +21,32 @@ public class BotClient {
     @Autowired
     private WebClient botWebClient;
 
-    public void sendUpdate(LinkUpdate linkUpdate){
+    public void sendUpdate(LinkUpdate linkUpdate) {
         botWebClient
-            .post()
-            .uri("/updates")
-            .contentType(MediaType.APPLICATION_JSON)
-            .body(BodyInserters.fromValue(linkUpdate))
-            .retrieve()
-            .onStatus(HttpStatusCode::is4xxClientError, BotClient::applyError)
-            .onStatus(HttpStatusCode::isError, BotClient::applyError)
-            .toBodilessEntity()
-            .block();
+                .post()
+                .uri("/updates")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromValue(linkUpdate))
+                .retrieve()
+                .onStatus(HttpStatusCode::is4xxClientError, BotClient::applyError)
+                .onStatus(HttpStatusCode::isError, BotClient::applyError)
+                .toBodilessEntity()
+                .block();
     }
 
     private static Mono<? extends Throwable> applyError(ClientResponse response) {
-        return response.bodyToMono(ApiErrorResponse.class)
-            .flatMap(apiErrorResponse -> {
-                if (log.isErrorEnabled()) {
-                    log.error("Response status: {}", response.statusCode());
-                    log.error("Response headers: {}", response.headers().asHttpHeaders());
-                    response.bodyToMono(String.class)
+        return response.bodyToMono(ApiErrorResponse.class).flatMap(apiErrorResponse -> {
+            if (log.isErrorEnabled()) {
+                log.error("Response status: {}", response.statusCode());
+                log.error("Response headers: {}", response.headers().asHttpHeaders());
+                response.bodyToMono(String.class)
                         .publishOn(Schedulers.boundedElastic())
                         .subscribe(body -> log.error("Response body: {}", body));
-                }
-                String message = apiErrorResponse.getExceptionMessage();
-                String code = apiErrorResponse.getCode();
-                String name = apiErrorResponse.getExceptionName();
-                return Mono.error(new ScrapperException(message, code, name));
-            });
+            }
+            String message = apiErrorResponse.getExceptionMessage();
+            String code = apiErrorResponse.getCode();
+            String name = apiErrorResponse.getExceptionName();
+            return Mono.error(new ScrapperException(message, code, name));
+        });
     }
 }

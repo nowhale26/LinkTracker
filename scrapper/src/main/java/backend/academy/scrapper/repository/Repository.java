@@ -1,11 +1,11 @@
 package backend.academy.scrapper.repository;
 
 import backend.academy.scrapper.common.exception.BusinessException;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
@@ -18,7 +18,7 @@ public class Repository implements LinksRepository {
         Set<Link> links;
         if (repository.containsKey(userId)) {
             links = repository.get(userId);
-            if(links.contains(link)){
+            if (links.contains(link)) {
                 links.remove(link);
             }
         } else {
@@ -32,7 +32,7 @@ public class Repository implements LinksRepository {
     public void delete(Long userId, Link link) {
         Set<Link> links = repository.get(userId);
         boolean removedLink = links.remove(link);
-        if(!removedLink){
+        if (!removedLink) {
             throw new BusinessException("Данная ссылка не найдена в базе данных", "404", "Ссылка не найдена");
         }
         repository.put(userId, links);
@@ -41,8 +41,8 @@ public class Repository implements LinksRepository {
     @Override
     public void delete(Long userId) {
         var removed = repository.remove(userId);
-        if(removed==null){
-            throw new BusinessException("Чат с таким id не существует в базе данных","404","Чат не существует");
+        if (removed == null) {
+            throw new BusinessException("Чат с таким id не существует в базе данных", "404", "Чат не существует");
         }
     }
 

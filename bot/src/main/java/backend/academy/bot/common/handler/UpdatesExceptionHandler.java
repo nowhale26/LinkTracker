@@ -1,20 +1,20 @@
 package backend.academy.bot.common.handler;
 
 import backend.academy.bot.scrapperservice.client.model.ApiErrorResponse;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import java.util.ArrayList;
-import java.util.List;
 
 @RestControllerAdvice(basePackages = {"backend.academy.bot.scrapperservice.controller"})
 @Slf4j
 public class UpdatesExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiErrorResponse> handleException(final Exception exception) {
-        log.info(exception.getMessage(), exception);
+        log.error("Error message: {}", exception.getMessage());
         var response = new ApiErrorResponse();
         response.setExceptionMessage(exception.getMessage());
         response.setCode("1");
@@ -27,4 +27,3 @@ public class UpdatesExceptionHandler {
         return new ResponseEntity<>(response, HttpStatusCode.valueOf(400));
     }
 }
-

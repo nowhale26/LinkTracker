@@ -9,17 +9,16 @@ import com.pengrad.telegrambot.model.BotCommand;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.request.SetMyCommands;
-import com.pengrad.telegrambot.response.SendResponse;
 import jakarta.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 @Component
+@Slf4j
 public class BotListener {
 
     private final TelegramBot bot;
@@ -51,19 +50,20 @@ public class BotListener {
         bot.execute(new SetMyCommands(botCommands));
 
         // Register for updates
-        bot.setUpdatesListener(updates -> {
-            return handleUpdates(updates);
-
-        }, e -> {
-            if (e.response() != null) {
-                // got bad response from telegram
-                e.response().errorCode();
-                e.response().description();
-            } else {
-                // probably network error
-                e.printStackTrace();
-            }
-        });
+        bot.setUpdatesListener(
+                updates -> {
+                    return handleUpdates(updates);
+                },
+                e -> {
+                    if (e.response() != null) {
+                        // got bad response from telegram
+                        log.error("Error code: {}", e.response().errorCode());
+                        log.error("Error description: {}", e.response().description());
+                    } else {
+                        // probably network error
+                        e.printStackTrace();
+                    }
+                });
     }
 
     protected int handleUpdates(List<Update> updates) {
@@ -75,13 +75,12 @@ public class BotListener {
                 if (executors.containsKey(command)) {
                     MessageExecutor executor = executors.get(command);
                     executor.execute(update, bot);
-                    if (executor instanceof StatefulMessageExecutor statefulExecutor) {
-                        if (statefulExecutor.isChatInDialog(chatId)) {
-                            activeDialogs.put(chatId, statefulExecutor);
-                        }
+                    if (executor instanceof StatefulMessageExecutor statefulExecutor
+                            && statefulExecutor.isChatInDialog(chatId)) {
+                        activeDialogs.put(chatId, statefulExecutor);
                     }
                 } else {
-                    SendResponse execute = bot.execute(new SendMessage(chatId, UNKNOWN_COMMAND));
+                    bot.execute(new SendMessage(chatId, UNKNOWN_COMMAND));
                 }
             } else {
                 StatefulMessageExecutor activeExecutor = activeDialogs.get(chatId);

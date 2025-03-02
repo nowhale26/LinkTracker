@@ -12,7 +12,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -29,82 +28,81 @@ public class ScrapperClient {
     }
 
     public ListLinksResponse getLinks(Long userId) {
-       return scrapperWebClient
-            .get()
-            .uri("/links")
-            .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-            .header("Tg-Chat-Id", userId.toString())
-            .retrieve()
-            .onStatus(HttpStatusCode::is4xxClientError, ScrapperClient::applyError)
-            .onStatus(HttpStatusCode::isError, ScrapperClient::applyError) // throw a functional exception
-            .bodyToMono(ListLinksResponse.class)
-            .block();
+        return scrapperWebClient
+                .get()
+                .uri("/links")
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .header("Tg-Chat-Id", userId.toString())
+                .retrieve()
+                .onStatus(HttpStatusCode::is4xxClientError, ScrapperClient::applyError)
+                .onStatus(HttpStatusCode::isError, ScrapperClient::applyError) // throw a functional exception
+                .bodyToMono(ListLinksResponse.class)
+                .block();
     }
 
     public LinkResponse addLink(Long userId, AddLinkRequest link) {
         return scrapperWebClient
-            .post()
-            .uri("/links")
-            .contentType(MediaType.APPLICATION_JSON)
-            .header("Tg-Chat-Id", userId.toString())
-            .body(BodyInserters.fromValue(link))
-            .retrieve()
-            .onStatus(HttpStatusCode::is4xxClientError, ScrapperClient::applyError)
-            .onStatus(HttpStatusCode::isError, ScrapperClient::applyError)
-            .bodyToMono(LinkResponse.class)
-            .block();
+                .post()
+                .uri("/links")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Tg-Chat-Id", userId.toString())
+                .body(BodyInserters.fromValue(link))
+                .retrieve()
+                .onStatus(HttpStatusCode::is4xxClientError, ScrapperClient::applyError)
+                .onStatus(HttpStatusCode::isError, ScrapperClient::applyError)
+                .bodyToMono(LinkResponse.class)
+                .block();
     }
 
     public LinkResponse removeLink(Long userId, RemoveLinkRequest link) {
         return scrapperWebClient
-            .method(HttpMethod.DELETE)
-            .uri("/links")
-            .contentType(MediaType.APPLICATION_JSON)
-            .header("Tg-Chat-Id", userId.toString())
-            .body(BodyInserters.fromValue(link))
-            .retrieve()
-            .onStatus(HttpStatusCode::is4xxClientError, ScrapperClient::applyError)
-            .onStatus(HttpStatusCode::isError, ScrapperClient::applyError)
-            .bodyToMono(LinkResponse.class)
-            .block();
+                .method(HttpMethod.DELETE)
+                .uri("/links")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Tg-Chat-Id", userId.toString())
+                .body(BodyInserters.fromValue(link))
+                .retrieve()
+                .onStatus(HttpStatusCode::is4xxClientError, ScrapperClient::applyError)
+                .onStatus(HttpStatusCode::isError, ScrapperClient::applyError)
+                .bodyToMono(LinkResponse.class)
+                .block();
     }
 
-    public void registerChat(Long userId){
-         scrapperWebClient
-            .post()
-            .uri("/tg-chat/{id}",userId)
-            .retrieve()
-            .onStatus(HttpStatusCode::is4xxClientError, ScrapperClient::applyError)
-            .onStatus(HttpStatusCode::isError, ScrapperClient::applyError)
-            .toBodilessEntity()
-            .block();
-    }
-
-    public void deleteChat(Long userId){
+    public void registerChat(Long userId) {
         scrapperWebClient
-            .delete()
-            .uri("/tg-chat/{id}",userId)
-            .retrieve()
-            .onStatus(HttpStatusCode::is4xxClientError, ScrapperClient::applyError)
-            .onStatus(HttpStatusCode::isError, ScrapperClient::applyError)
-            .toBodilessEntity()
-            .block();
+                .post()
+                .uri("/tg-chat/{id}", userId)
+                .retrieve()
+                .onStatus(HttpStatusCode::is4xxClientError, ScrapperClient::applyError)
+                .onStatus(HttpStatusCode::isError, ScrapperClient::applyError)
+                .toBodilessEntity()
+                .block();
+    }
+
+    public void deleteChat(Long userId) {
+        scrapperWebClient
+                .delete()
+                .uri("/tg-chat/{id}", userId)
+                .retrieve()
+                .onStatus(HttpStatusCode::is4xxClientError, ScrapperClient::applyError)
+                .onStatus(HttpStatusCode::isError, ScrapperClient::applyError)
+                .toBodilessEntity()
+                .block();
     }
 
     private static Mono<? extends Throwable> applyError(ClientResponse response) {
-        return response.bodyToMono(ApiErrorResponse.class)
-            .flatMap(apiErrorResponse -> {
-                if (log.isErrorEnabled()) {
-                    log.error("Response status: {}", response.statusCode());
-                    log.error("Response headers: {}", response.headers().asHttpHeaders());
-                    response.bodyToMono(String.class)
+        return response.bodyToMono(ApiErrorResponse.class).flatMap(apiErrorResponse -> {
+            if (log.isErrorEnabled()) {
+                log.error("Response status: {}", response.statusCode());
+                log.error("Response headers: {}", response.headers().asHttpHeaders());
+                response.bodyToMono(String.class)
                         .publishOn(Schedulers.boundedElastic())
                         .subscribe(body -> log.error("Response body: {}", body));
-                }
-                String message = apiErrorResponse.getExceptionMessage();
-                String code = apiErrorResponse.getCode();
-                String name = apiErrorResponse.getExceptionName();
-                return Mono.error(new ScrapperClientException(message, code, name));
-            });
+            }
+            String message = apiErrorResponse.getExceptionMessage();
+            String code = apiErrorResponse.getCode();
+            String name = apiErrorResponse.getExceptionName();
+            return Mono.error(new ScrapperClientException(message, code, name));
+        });
     }
 }

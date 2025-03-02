@@ -4,8 +4,8 @@ import backend.academy.scrapper.repository.Link;
 import org.springframework.stereotype.Component;
 
 @Component
-public class StackoverflowLinkValidator implements ExternalApiValidator{
-    private final String siteName = "stackoverflow";
+public class StackoverflowLinkValidator implements ExternalApiValidator {
+    private static final String siteName = "stackoverflow";
 
     @Override
     public boolean validateLink(Link link) {

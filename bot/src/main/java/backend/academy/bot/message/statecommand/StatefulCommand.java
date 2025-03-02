@@ -6,7 +6,7 @@ import com.pengrad.telegrambot.model.Update;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public abstract class StatefulCommand<T extends Enum<T>> extends Command implements StatefulMessageExecutor{
+public abstract class StatefulCommand<T extends Enum<T>> extends Command implements StatefulMessageExecutor {
     protected final TelegramBot bot;
     protected final Map<Long, T> chatStates = new ConcurrentHashMap<>();
     protected final Map<Long, Object> chatData = new ConcurrentHashMap<>();

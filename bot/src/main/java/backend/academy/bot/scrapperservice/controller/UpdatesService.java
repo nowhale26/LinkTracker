@@ -10,13 +10,13 @@ public class UpdatesService {
 
     private final TelegramBot bot;
 
-    public UpdatesService(TelegramBot bot){
+    public UpdatesService(TelegramBot bot) {
         this.bot = bot;
     }
 
-    public void sendUpdate(LinkUpdate update){
-        for(var tgChatId : update.getTgChatIds()){
-            String message = "Ссылка: "+update.getUrl()+" Сообщение: " + update.getDescription();
+    public void sendUpdate(LinkUpdate update) {
+        for (var tgChatId : update.getTgChatIds()) {
+            String message = "Ссылка: " + update.getUrl() + " Сообщение: " + update.getDescription();
             bot.execute(new SendMessage(tgChatId, message));
         }
     }

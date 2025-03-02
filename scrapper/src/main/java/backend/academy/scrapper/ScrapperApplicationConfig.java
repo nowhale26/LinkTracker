@@ -1,6 +1,5 @@
 package backend.academy.scrapper;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -11,7 +10,7 @@ public class ScrapperApplicationConfig {
     private String stackoverflowUrl;
     private String botUrl;
 
-    public ScrapperApplicationConfig(ScrapperConfig scrapperConfig){
+    public ScrapperApplicationConfig(ScrapperConfig scrapperConfig) {
         this.githubUrl = scrapperConfig.githubUrl();
         this.stackoverflowUrl = scrapperConfig.stackoverflowUrl();
         this.botUrl = scrapperConfig.botUrl();
@@ -19,22 +18,16 @@ public class ScrapperApplicationConfig {
 
     @Bean
     public WebClient githubWebClient() {
-        return WebClient.builder()
-            .baseUrl(githubUrl)
-            .build();
+        return WebClient.builder().baseUrl(githubUrl).build();
     }
 
     @Bean
     public WebClient botWebClient() {
-        return WebClient.builder()
-            .baseUrl(botUrl)
-            .build();
+        return WebClient.builder().baseUrl(botUrl).build();
     }
 
     @Bean
-    public WebClient stackoverflowWebClient(){
-        return WebClient.builder()
-            .baseUrl(stackoverflowUrl)
-            .build();
+    public WebClient stackoverflowWebClient() {
+        return WebClient.builder().baseUrl(stackoverflowUrl).build();
     }
 }

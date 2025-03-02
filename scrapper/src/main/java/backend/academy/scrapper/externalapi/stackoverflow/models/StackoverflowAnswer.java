@@ -1,9 +1,9 @@
 package backend.academy.scrapper.externalapi.stackoverflow.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
 import java.time.Instant;
 import java.time.ZonedDateTime;
+import lombok.Data;
 
 @Data
 public class StackoverflowAnswer {

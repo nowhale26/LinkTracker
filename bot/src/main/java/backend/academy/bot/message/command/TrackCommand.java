@@ -6,10 +6,9 @@ import backend.academy.bot.scrapperservice.client.model.AddLinkRequest;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
-import org.springframework.stereotype.Component;
-import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
+import org.springframework.stereotype.Component;
 
 @Component
 public class TrackCommand extends StatefulCommand<TrackCommand.State> {
@@ -101,5 +100,4 @@ public class TrackCommand extends StatefulCommand<TrackCommand.State> {
     private List<String> parseFilters(String text) {
         return Arrays.asList(text.split("\\s+"));
     }
-
 }

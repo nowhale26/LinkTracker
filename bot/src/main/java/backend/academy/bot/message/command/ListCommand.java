@@ -6,9 +6,8 @@ import backend.academy.bot.scrapperservice.client.model.ListLinksResponse;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
-import org.springframework.stereotype.Component;
 import java.util.List;
-
+import org.springframework.stereotype.Component;
 
 @Component
 public class ListCommand extends Command {
@@ -32,12 +31,11 @@ public class ListCommand extends Command {
         bot.execute(new SendMessage(chatId, message));
     }
 
-    protected String createListMessage(List<LinkResponse> response){
+    protected String createListMessage(List<LinkResponse> response) {
         StringBuilder message = new StringBuilder();
         for (var link : response) {
             message.append(link.getUrl()).append("\n");
         }
         return message.toString();
     }
-
 }

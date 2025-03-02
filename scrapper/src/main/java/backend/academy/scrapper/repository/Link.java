@@ -1,12 +1,10 @@
 package backend.academy.scrapper.repository;
 
-import backend.academy.scrapper.links.model.AddLinkRequest;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Objects;
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter

@@ -6,5 +6,6 @@ import org.springframework.stereotype.Component;
 @Component
 public interface ExternalApiValidator {
     boolean validateLink(Link link);
+
     String getSiteName();
 }

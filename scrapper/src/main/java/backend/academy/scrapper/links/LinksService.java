@@ -2,7 +2,6 @@ package backend.academy.scrapper.links;
 
 import backend.academy.scrapper.common.exception.BusinessException;
 import backend.academy.scrapper.common.validator.LinkValidator;
-import backend.academy.scrapper.externalapi.stackoverflow.StackoverflowClient;
 import backend.academy.scrapper.links.model.AddLinkRequest;
 import backend.academy.scrapper.links.model.LinkResponse;
 import backend.academy.scrapper.links.model.ListLinksResponse;
@@ -10,16 +9,12 @@ import backend.academy.scrapper.links.model.RemoveLinkRequest;
 import backend.academy.scrapper.repository.Link;
 import backend.academy.scrapper.repository.Repository;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
 public class LinksService {
@@ -52,7 +47,8 @@ public class LinksService {
     public ListLinksResponse getLinks(Long userId) {
         Set<Link> links = repository.get(userId);
         if (links == null) {
-            throw new BusinessException("Пользователь с таким id не зарегестрирован", "400", "Некорректный id пользователя");
+            throw new BusinessException(
+                    "Пользователь с таким id не зарегестрирован", "400", "Некорректный id пользователя");
         } else if (links.isEmpty()) {
             throw new BusinessException("У данного пользователя нет ни одной ссылки", "400", "Пустой массив ссылок");
         }
@@ -73,14 +69,6 @@ public class LinksService {
         repository.delete(id);
     }
 
-    private void validateURL(Link link) {
-        try {
-            new URI(link.getUrl());
-        } catch (URISyntaxException e) {
-            throw new BusinessException("Ссылка с некорректным синтаксисом", "400", "Некорректная ссылка");
-        }
-    }
-
     private LinkResponse createResponse(Long userId, Link link) {
         LinkResponse linkResponse = new LinkResponse();
         linkResponse.setId(userId);
@@ -98,9 +86,7 @@ public class LinksService {
             String[] parts = host.split("\\.");
             link.setSiteName(parts[parts.length - 2]);
         } catch (Exception e) {
-            throw new BusinessException("Некорректная ссылка","400",e.getMessage());
+            throw new BusinessException("Некорректная ссылка", "400", e.getMessage());
         }
     }
-
-
 }

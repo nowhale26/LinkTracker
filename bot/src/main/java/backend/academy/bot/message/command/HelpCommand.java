@@ -3,8 +3,8 @@ package backend.academy.bot.message.command;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
-import org.springframework.stereotype.Component;
 import java.util.List;
+import org.springframework.stereotype.Component;
 
 @Component
 public class HelpCommand extends Command {
@@ -23,7 +23,10 @@ public class HelpCommand extends Command {
             if (command.getName() == null) {
                 continue;
             }
-            message.append(command.getName()).append(": ").append(command.getDescription()).append("\n");
+            message.append(command.getName())
+                    .append(": ")
+                    .append(command.getDescription())
+                    .append("\n");
         }
         bot.execute(new SendMessage(chatId, message.toString()));
     }

@@ -1,19 +1,18 @@
 package backend.academy.bot;
 
+import static backend.academy.bot.BotListener.UNKNOWN_COMMAND;
+import static org.mockito.ArgumentMatchers.any;
+
 import backend.academy.bot.common.exception.BotException;
 import com.pengrad.telegrambot.TelegramBot;
-import com.pengrad.telegrambot.request.BaseRequest;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.request.SetMyCommands;
-import com.pengrad.telegrambot.response.BaseResponse;
 import com.pengrad.telegrambot.response.MessagesResponse;
 import org.mockito.Mockito;
 import org.mockito.stubbing.Answer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import static backend.academy.bot.BotListener.UNKNOWN_COMMAND;
-import static org.mockito.ArgumentMatchers.any;
 
 @Configuration
 public class TelegramBotConfig {
@@ -26,7 +25,7 @@ public class TelegramBotConfig {
 
         Mockito.when(telegramBot.execute(any(SendMessage.class))).thenAnswer((Answer<MessagesResponse>) invocation -> {
             SendMessage argument = invocation.getArgument(0);
-            //System.out.println("------------------------------- " + argument.getParameters());
+            // System.out.println("------------------------------- " + argument.getParameters());
             String message = (String) argument.getParameters().get("text");
             if (UNKNOWN_COMMAND.equals(message)) {
                 throw new BotException(message, "1", message);

@@ -19,10 +19,8 @@ public class ScrapperException extends RuntimeException {
         this.name = name;
     }
 
-    public ScrapperException(String message, String code){
-        super(message,null);
+    public ScrapperException(String message, String code) {
+        super(message, null);
         this.code = code;
     }
-
-
 }

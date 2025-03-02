@@ -1,8 +1,8 @@
 package backend.academy.scrapper.externalapi.github.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
 import java.time.ZonedDateTime;
+import lombok.Data;
 
 @Data
 public class GithubResponse {
@@ -14,5 +14,4 @@ public class GithubResponse {
 
     @JsonProperty("date")
     private ZonedDateTime date;
-
 }

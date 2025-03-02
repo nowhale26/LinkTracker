@@ -1,17 +1,16 @@
 package backend.academy.bot.message.command;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
+
 import backend.academy.bot.BaseTest;
 import backend.academy.bot.common.exception.BotException;
-import backend.academy.bot.common.exception.ScrapperClientException;
 import backend.academy.bot.scrapperservice.client.model.LinkResponse;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.utility.BotUtils;
-import org.assertj.core.api.Assertions;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import java.util.List;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
 
 public class CommandTest extends BaseTest {
 
@@ -19,14 +18,13 @@ public class CommandTest extends BaseTest {
     private final UntrackCommand untrackCommand;
     private final ListCommand listCommand;
 
-    private final Update command = BotUtils.parseUpdate("{\n" +
-        "    \"message\": {\n" +
-        "        \"text\": \"/track 123 \",\n" +
-        "        \"chat\": {\n" +
-        "            \"id\": \"123\"\n" +
-        "        }\n" +
-        "    }\n" +
-        "}");
+    private final Update command = BotUtils.parseUpdate("{\n" + "    \"message\": {\n"
+            + "        \"text\": \"/track 123 \",\n"
+            + "        \"chat\": {\n"
+            + "            \"id\": \"123\"\n"
+            + "        }\n"
+            + "    }\n"
+            + "}");
 
     @Autowired
     public CommandTest(TrackCommand trackCommand, UntrackCommand untrackCommand, ListCommand listCommand) {
@@ -67,11 +65,10 @@ public class CommandTest extends BaseTest {
 
     @Test
     public void listFormattingTest() {
-        List<LinkResponse> links = List.of(new LinkResponse().url("abc"), new LinkResponse().url("def"), new LinkResponse().url("xyz"));
+        List<LinkResponse> links =
+                List.of(new LinkResponse().url("abc"), new LinkResponse().url("def"), new LinkResponse().url("xyz"));
         String message = listCommand.createListMessage(links);
-        String expectedMessage = "abc\n" +
-            "def\n" +
-            "xyz\n";
+        String expectedMessage = "abc\n" + "def\n" + "xyz\n";
         assertThat(message).isEqualTo(expectedMessage);
     }
 }

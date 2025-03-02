@@ -9,7 +9,6 @@ public class BotException extends RuntimeException {
     private String code;
     private String name;
 
-
     public BotException(String message, String code, String name, Throwable cause) {
         super(message, cause);
         this.code = code;

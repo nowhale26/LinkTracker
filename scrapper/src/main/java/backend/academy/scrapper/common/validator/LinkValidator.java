@@ -2,10 +2,10 @@ package backend.academy.scrapper.common.validator;
 
 import backend.academy.scrapper.common.exception.BusinessException;
 import backend.academy.scrapper.repository.Link;
-import org.springframework.stereotype.Component;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.springframework.stereotype.Component;
 
 @Component
 public class LinkValidator {
@@ -21,8 +21,7 @@ public class LinkValidator {
     public void validateLink(Link link) {
         boolean validated = validators.get(link.getSiteName()).validateLink(link);
         if (!validated) {
-            throw new BusinessException("Некорректная ссылка", "400",
-                "Некорректные параметры запроса");
+            throw new BusinessException("Некорректная ссылка", "400", "Некорректные параметры запроса");
         }
     }
 }

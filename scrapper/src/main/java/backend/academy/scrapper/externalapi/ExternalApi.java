@@ -5,5 +5,6 @@ import java.time.ZonedDateTime;
 
 public interface ExternalApi {
     ZonedDateTime checkLinkUpdate(Link link);
+
     String getSiteName();
 }

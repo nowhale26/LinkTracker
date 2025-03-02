@@ -1,11 +1,13 @@
 package backend.academy.bot.message.command;
 
 import backend.academy.bot.common.exception.ScrapperClientException;
+import backend.academy.bot.scrapperservice.client.model.LinkResponse;
 import backend.academy.bot.scrapperservice.client.model.ListLinksResponse;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import org.springframework.stereotype.Component;
+import java.util.List;
 
 
 @Component
@@ -26,11 +28,16 @@ public class ListCommand extends Command {
             bot.execute(new SendMessage(chatId, message));
             return;
         }
+        String message = createListMessage(response.getLinks());
+        bot.execute(new SendMessage(chatId, message));
+    }
+
+    protected String createListMessage(List<LinkResponse> response){
         StringBuilder message = new StringBuilder();
-        for (var link : response.getLinks()) {
+        for (var link : response) {
             message.append(link.getUrl()).append("\n");
         }
-        bot.execute(new SendMessage(chatId, message.toString()));
+        return message.toString();
     }
 
 }

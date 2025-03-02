@@ -58,6 +58,7 @@ public class LinksServiceTest extends BaseTest {
         } catch (BusinessException e) {
             assertThat(e.getMessage()).isEqualTo("Некорректная ссылка");
         }
+        repository.delete(123L);
     }
 
     @Test
@@ -81,6 +82,7 @@ public class LinksServiceTest extends BaseTest {
 
         repository.delete(124L,linktest);
         assertThat(repository.get(124L).size()).isEqualTo(0);
+        repository.delete(124L);
     }
 
     @Test
@@ -101,7 +103,7 @@ public class LinksServiceTest extends BaseTest {
             assertThat(List.of("user:dummy","job:work"))
                 .isEqualTo(link.getFilters());
         }
-
+        repository.delete(125L);
     }
 
 

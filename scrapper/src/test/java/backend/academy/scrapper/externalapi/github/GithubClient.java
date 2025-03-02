@@ -28,6 +28,8 @@ public class GithubClient implements ExternalApi {
     public ZonedDateTime checkLinkUpdate(Link link) {
         if("https://github.com/nowhale26/abc".equals(link.getUrl())){
             return ZonedDateTime.now().plusHours(5);
+        } else if("https://github.com/nowhale26/def".equals(link.getUrl())){
+            throw new ScrapperException(siteName,"400","Некорректный запрос");
         } else{
             return ZonedDateTime.now().minusHours(5);
         }

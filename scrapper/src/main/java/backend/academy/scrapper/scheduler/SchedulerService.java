@@ -12,6 +12,7 @@ import java.net.URI;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -41,7 +42,10 @@ public class SchedulerService {
             return null;
         }
         Map<String, List<Long>> updatedLinks = new HashMap<>();
+        Map<Long, Set<Link>> linksToUpdate = new HashMap<>(); // Временное хранилище для обновлений
+
         for (var linksEntry : linksRepository.entrySet()) {
+            Set<Link> updatedSet = new HashSet<>(); // Копия для обновлений
             for (var link : linksEntry.getValue()) {
                 ZonedDateTime update;
                 String siteName = link.getSiteName();
@@ -55,24 +59,23 @@ public class SchedulerService {
                         log.error("Неправильное имя сайта");
                         continue;
                     }
-                    if (update != null) {
-                        if (update.isAfter(link.getLastUpdated())) {
-                            link.setLastUpdated(update);
-                            repository.save(linksEntry.getKey(), link);
-                            List<Long> iDs;
-                            if (updatedLinks.containsKey(link.getUrl())) {
-                                iDs = updatedLinks.get(link.getUrl());
-                            } else {
-                                iDs = new ArrayList<>();
-                            }
-                            iDs.add(linksEntry.getKey());
-                            updatedLinks.put(link.getUrl(), iDs);
-                        }
+                    if (update != null && update.isAfter(link.getLastUpdated())) {
+                        link.setLastUpdated(update);
+                        updatedSet.add(link); // Сохраняем во временный набор
+                        List<Long> iDs = updatedLinks.computeIfAbsent(link.getUrl(), k -> new ArrayList<>());
+                        iDs.add(linksEntry.getKey());
                     }
                 }
-
+            }
+            if (!updatedSet.isEmpty()) {
+                linksToUpdate.put(linksEntry.getKey(), updatedSet);
             }
         }
+
+        for (var entry : linksToUpdate.entrySet()) {
+            repository.save(entry.getKey(), entry.getValue().iterator().next());
+        }
+
         return updatedLinks;
     }
 

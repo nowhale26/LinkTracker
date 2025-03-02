@@ -22,9 +22,6 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class BotListener {
 
-    @Value("${app.telegram-token:1234}")
-    private String token;
-
     private final TelegramBot bot;
 
     public static final String UNKNOWN_COMMAND = "Неизвестная команда";

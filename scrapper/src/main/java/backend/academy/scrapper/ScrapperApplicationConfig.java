@@ -7,14 +7,15 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 @Configuration
 public class ScrapperApplicationConfig {
-    @Value("${app.github-url:https://api.github.com/repos}")
     private String githubUrl;
-
-    @Value("${app.github-url:https://api.stackexchange.com/2.3/questions}")
     private String stackoverflowUrl;
-
-    @Value("${app.bot-url:http://localhost:8080}")
     private String botUrl;
+
+    public ScrapperApplicationConfig(ScrapperConfig scrapperConfig){
+        this.githubUrl = scrapperConfig.githubUrl();
+        this.stackoverflowUrl = scrapperConfig.stackoverflowUrl();
+        this.botUrl = scrapperConfig.botUrl();
+    }
 
     @Bean
     public WebClient githubWebClient() {

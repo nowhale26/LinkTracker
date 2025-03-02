@@ -10,8 +10,11 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 @Configuration
 public class BotApplicationConfig {
-    @Value("${app.scrapper-url:http://localhost:8081}")
     private String scrapperUrl;
+
+    public BotApplicationConfig(BotConfig botConfig){
+        scrapperUrl = botConfig.scrapperUrl();
+    }
 
     @Bean
     public WebClient scrapperWebClient() {

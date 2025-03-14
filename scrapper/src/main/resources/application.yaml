@@ -11,11 +11,17 @@ spring:
   application:
     name: Scrapper
   liquibase:
-    enabled: false
+    enabled: true
+    change-log: db/changelog/db.changelog-master.yaml
   jpa:
     hibernate:
       ddl-auto: validate
     open-in-view: false
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/linktracker_db
+    username: postgres
+    password: rjnbr
 
 server:
   port: 8081

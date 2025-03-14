@@ -11,10 +11,10 @@ import org.springframework.stereotype.Component;
 @Profile("test")
 @Component
 @Slf4j
-public class StackoverflowClient implements ExternalApi {
+public class StackoverflowClient{
     private final String siteName = "stackoverflow";
 
-    @Override
+
     public ZonedDateTime checkLinkUpdate(Link link) {
         if ("https://stackoverflow.com/questions/1/a".equals(link.getUrl())) {
             return ZonedDateTime.now().plusHours(5);
@@ -25,7 +25,7 @@ public class StackoverflowClient implements ExternalApi {
         }
     }
 
-    @Override
+
     public String getSiteName() {
         return siteName;
     }

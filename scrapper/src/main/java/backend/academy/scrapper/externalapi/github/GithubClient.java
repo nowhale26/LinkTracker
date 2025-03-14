@@ -19,10 +19,8 @@ import reactor.core.scheduler.Schedulers;
 
 @Component
 @Slf4j
-public class GithubClient implements ExternalApi {
+public class GithubClient {
     private final WebClient githubWebClient;
-
-    private static final String siteName = "github";
 
     @Value("${app.github-token:1234}")
     private String githubToken;
@@ -31,28 +29,18 @@ public class GithubClient implements ExternalApi {
         this.githubWebClient = githubWebClient;
     }
 
-    @Override
-    public ZonedDateTime checkLinkUpdate(Link link) {
-        String requestLink = createRequestLink(link);
-        GithubResponse response = githubWebClient
-                .get()
-                .uri(requestLink)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + githubToken)
-                .retrieve()
-                .onStatus(HttpStatusCode::is4xxClientError, GithubClient::applyError)
-                .onStatus(HttpStatusCode::isError, GithubClient::applyError)
-                .bodyToMono(GithubResponse.class)
-                .block();
-        if (response != null) {
-            return response.getUpdatedAt();
-        } else {
-            return null;
-        }
-    }
 
-    @Override
-    public String getSiteName() {
-        return siteName;
+    public GithubResponse checkLinkUpdate(Link link) {
+        String requestLink = createRequestLink(link);
+        return githubWebClient
+            .get()
+            .uri(requestLink)
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + githubToken)
+            .retrieve()
+            .onStatus(HttpStatusCode::is4xxClientError, GithubClient::applyError)
+            .onStatus(HttpStatusCode::isError, GithubClient::applyError)
+            .bodyToMono(GithubResponse.class)
+            .block();
     }
 
     private String createRequestLink(Link link) {
@@ -67,8 +55,8 @@ public class GithubClient implements ExternalApi {
     private static Mono<? extends Throwable> applyError(ClientResponse response) {
         logResponse(response);
         return response.bodyToMono(String.class)
-                .flatMap(error -> Mono.error(
-                        new ScrapperException(error, response.statusCode().toString())));
+            .flatMap(error -> Mono.error(
+                new ScrapperException(error, response.statusCode().toString())));
     }
 
     private static void logResponse(ClientResponse response) {
@@ -76,8 +64,8 @@ public class GithubClient implements ExternalApi {
             log.info("Response status: {}", response.statusCode());
             log.info("Response headers: {}", response.headers().asHttpHeaders());
             response.bodyToMono(String.class)
-                    .publishOn(Schedulers.boundedElastic())
-                    .subscribe(body -> log.error("Response body: {}", body));
+                .publishOn(Schedulers.boundedElastic())
+                .subscribe(body -> log.error("Response body: {}", body));
         }
     }
 }

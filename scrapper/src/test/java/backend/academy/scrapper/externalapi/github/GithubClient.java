@@ -11,10 +11,10 @@ import org.springframework.stereotype.Component;
 @Profile("test")
 @Component
 @Slf4j
-public class GithubClient implements ExternalApi {
+public class GithubClient {
     private final String siteName = "github";
 
-    @Override
+
     public ZonedDateTime checkLinkUpdate(Link link) {
         if ("https://github.com/nowhale26/abc".equals(link.getUrl())) {
             return ZonedDateTime.now().plusHours(5);
@@ -25,7 +25,7 @@ public class GithubClient implements ExternalApi {
         }
     }
 
-    @Override
+
     public String getSiteName() {
         return siteName;
     }

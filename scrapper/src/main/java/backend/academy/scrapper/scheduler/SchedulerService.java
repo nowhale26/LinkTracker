@@ -49,7 +49,7 @@ public class SchedulerService {
                 String siteName = link.getSiteName();
                 if (siteName != null) {
                     try {
-                        update = externalApiMap.get(siteName).checkLinkUpdate(link);
+                        update = ZonedDateTime.parse(externalApiMap.get(siteName).checkLinkUpdate(link));
                     } catch (ScrapperException e) {
                         log.error("Error message: {}", e.getMessage());
                         continue;

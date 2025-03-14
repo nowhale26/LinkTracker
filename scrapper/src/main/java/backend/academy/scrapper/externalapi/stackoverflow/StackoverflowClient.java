@@ -17,19 +17,17 @@ import reactor.core.scheduler.Schedulers;
 
 @Component
 @Slf4j
-public class StackoverflowClient implements ExternalApi {
+public class StackoverflowClient{
     private final WebClient stackoverflowWebClient;
     private static final String filter = "!apyOSAmJazrj_y";
-    private static final String siteName = "stackoverflow";
 
     public StackoverflowClient(WebClient stackoverflowWebClient) {
         this.stackoverflowWebClient = stackoverflowWebClient;
     }
 
-    @Override
-    public ZonedDateTime checkLinkUpdate(Link link) {
+    public StackoverflowResponse checkLinkUpdate(Link link) {
         String id = getQuestionId(link);
-        StackoverflowResponse response = stackoverflowWebClient
+        return stackoverflowWebClient
                 .get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/{questionId}/answers")
@@ -43,16 +41,6 @@ public class StackoverflowClient implements ExternalApi {
                 .onStatus(HttpStatusCode::isError, StackoverflowClient::applyError)
                 .bodyToMono(StackoverflowResponse.class)
                 .block();
-        if (response != null) {
-            return response.getItems().getFirst().getCreationDateAsZonedDateTime();
-        } else {
-            return null;
-        }
-    }
-
-    @Override
-    public String getSiteName() {
-        return siteName;
     }
 
     private String getQuestionId(Link link) {

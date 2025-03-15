@@ -1,4 +1,4 @@
 CREATE TABLE users (
-    id SERIAL PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     tg_chat_id BIGINT UNIQUE NOT NULL
 );

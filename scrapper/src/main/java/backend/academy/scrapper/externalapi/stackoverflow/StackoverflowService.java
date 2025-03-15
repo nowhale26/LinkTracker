@@ -1,7 +1,7 @@
 package backend.academy.scrapper.externalapi.stackoverflow;
 
 import backend.academy.scrapper.externalapi.ExternalApi;
-import backend.academy.scrapper.repository.Link;
+import backend.academy.scrapper.repository.model.Link;
 
 public class StackoverflowService implements ExternalApi {
     private static final String siteName = "stackoverflow";

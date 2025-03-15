@@ -1,7 +1,7 @@
 package backend.academy.scrapper.common.validator;
 
 import backend.academy.scrapper.common.exception.BusinessException;
-import backend.academy.scrapper.repository.Link;
+import backend.academy.scrapper.repository.model.Link;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

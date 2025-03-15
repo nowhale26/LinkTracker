@@ -1,12 +1,10 @@
 package backend.academy.scrapper.externalapi.github;
 
 import backend.academy.scrapper.common.exception.ScrapperException;
-import backend.academy.scrapper.externalapi.ExternalApi;
 import backend.academy.scrapper.externalapi.github.models.GithubResponse;
-import backend.academy.scrapper.repository.Link;
+import backend.academy.scrapper.repository.model.Link;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.time.ZonedDateTime;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;

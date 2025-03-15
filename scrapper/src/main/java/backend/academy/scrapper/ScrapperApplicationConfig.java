@@ -1,19 +1,29 @@
 package backend.academy.scrapper;
 
+import backend.academy.scrapper.repository.JpaLinksRepository;
+import backend.academy.scrapper.repository.JpaUserRepository;
+import backend.academy.scrapper.repository.LinkRepository;
+import backend.academy.scrapper.repository.OrmLinkRepository;
+import backend.academy.scrapper.repository.SqlLinkRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Configuration
 public class ScrapperApplicationConfig {
-    private String githubUrl;
-    private String stackoverflowUrl;
-    private String botUrl;
+    private final String githubUrl;
+    private final String stackoverflowUrl;
+    private final String botUrl;
+    private final String accessType;
+
 
     public ScrapperApplicationConfig(ScrapperConfig scrapperConfig) {
         this.githubUrl = scrapperConfig.githubUrl();
         this.stackoverflowUrl = scrapperConfig.stackoverflowUrl();
         this.botUrl = scrapperConfig.botUrl();
+        this.accessType = scrapperConfig.accessType();
     }
 
     @Bean
@@ -29,5 +39,17 @@ public class ScrapperApplicationConfig {
     @Bean
     public WebClient stackoverflowWebClient() {
         return WebClient.builder().baseUrl(stackoverflowUrl).build();
+    }
+
+    @Bean
+    @Primary
+    public LinkRepository linkRepository(JdbcTemplate jdbcTemplate,
+                                         JpaLinksRepository jpaLinkRepository,
+                                         JpaUserRepository jpaUserRepository){
+        if ("ORM".equalsIgnoreCase(accessType)) {
+            return new OrmLinkRepository(jpaLinkRepository, jpaUserRepository);
+        } else {
+            return new SqlLinkRepository(jdbcTemplate);
+        }
     }
 }

@@ -6,6 +6,7 @@ app:
   github-url: https://api.github.com/repos
   stackoverflow-url: https://api.stackexchange.com/2.3/questions
   bot-url: http://localhost:8080
+  access-type: ORM
 
 spring:
   application:
@@ -31,7 +32,7 @@ springdoc:
     enabled: true
     path: /swagger-ui
 
-logging:
-  structured:
-    format:
-      console: ecs
+#logging:
+#  structured:
+#    format:
+#      console: ecs

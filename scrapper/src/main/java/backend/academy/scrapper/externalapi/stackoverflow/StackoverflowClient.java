@@ -1,10 +1,8 @@
 package backend.academy.scrapper.externalapi.stackoverflow;
 
 import backend.academy.scrapper.common.exception.ScrapperException;
-import backend.academy.scrapper.externalapi.ExternalApi;
 import backend.academy.scrapper.externalapi.stackoverflow.models.StackoverflowResponse;
-import backend.academy.scrapper.repository.Link;
-import java.time.ZonedDateTime;
+import backend.academy.scrapper.repository.model.Link;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatusCode;

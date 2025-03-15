@@ -1,6 +1,6 @@
 CREATE TABLE links (
-    id SERIAL PRIMARY KEY,
-    user_id INTEGER NOT NULL,
+    id BIGSERIAL PRIMARY KEY,
+    user_id BIGINT NOT NULL,
     url TEXT NOT NULL,
     last_updated TIMESTAMP WITH TIME ZONE,
     site_name TEXT,

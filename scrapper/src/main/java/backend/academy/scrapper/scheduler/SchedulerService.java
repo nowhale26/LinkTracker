@@ -3,7 +3,7 @@ package backend.academy.scrapper.scheduler;
 import backend.academy.scrapper.common.exception.ScrapperException;
 import backend.academy.scrapper.externalapi.ExternalApi;
 import backend.academy.scrapper.externalapi.github.GithubClient;
-import backend.academy.scrapper.repository.Link;
+import backend.academy.scrapper.repository.model.Link;
 import backend.academy.scrapper.repository.Repository;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;

@@ -34,24 +34,19 @@ public class SqlLinkRepository implements LinkRepository {
         Long userId = getOrCreateUserId(tgChatId);
 
         String linkSql = "INSERT INTO links (user_id, url, last_updated, site_name) VALUES (?, ?, ?, ?) RETURNING id";
-        try {
-            Long linkId = jdbcTemplate.queryForObject(linkSql, Long.class, userId, link.getUrl(), Timestamp.from(link.getLastUpdated().toInstant()), link.getSiteName());
 
-            if (link.getFilters() != null) {
-                for (var filter : link.getFilters()) {
-                    jdbcTemplate.update("INSERT INTO filters (link_id, filter) VALUES (?, ?) ON CONFLICT DO NOTHING", linkId, filter.getFilter());
-                }
-            }
+        Long linkId = jdbcTemplate.queryForObject(linkSql, Long.class, userId, link.getUrl(), Timestamp.from(link.getLastUpdated().toInstant()), link.getSiteName());
 
-            if (link.getTags() != null) {
-                for (var tag : link.getTags()) {
-                    jdbcTemplate.update("INSERT INTO tags (link_id, tag) VALUES (?, ?) ON CONFLICT DO NOTHING", linkId, tag.getTag());
-                }
+        if (link.getFilters() != null) {
+            for (var filter : link.getFilters()) {
+                jdbcTemplate.update("INSERT INTO filters (link_id, filter) VALUES (?, ?) ON CONFLICT DO NOTHING", linkId, filter.getFilter());
             }
-        } catch (DataAccessException e) {
-            System.err.println("SQL Error: " + e.getMessage());
-            System.err.println("Root Cause: " + e.getRootCause());
-            throw new BusinessException(e.getMessage(),"400", Arrays.toString(e.getStackTrace()));
+        }
+
+        if (link.getTags() != null) {
+            for (var tag : link.getTags()) {
+                jdbcTemplate.update("INSERT INTO tags (link_id, tag) VALUES (?, ?) ON CONFLICT DO NOTHING", linkId, tag.getTag());
+            }
         }
 
     }

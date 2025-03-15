@@ -7,4 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface JpaLinksRepository extends JpaRepository<Link, Long> {
     Set<Link> findByUserId(Long userId);
     void deleteByUserIdAndUrl(Long userId, String url);
+    Link findByUserIdAndUrl(Long userId, String url);
 }

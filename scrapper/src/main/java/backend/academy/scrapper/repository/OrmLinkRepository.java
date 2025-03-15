@@ -32,14 +32,29 @@ public class OrmLinkRepository implements LinkRepository {
         Long userId = getOrCreateUserId(tgChatId);
         link.setUserId(userId);
 
-        if (link.getFilters() != null) {
-            link.getFilters().forEach(filter -> filter.setLink(link));
-        }
-        if (link.getTags() != null) {
-            link.getTags().forEach(tag -> tag.setLink(link));
-        }
+        Link existingLink = jpaLinksRepository.findByUserIdAndUrl(userId, link.getUrl());
 
-        jpaLinksRepository.save(link);
+        if (existingLink != null) {
+            existingLink.setFilters(link.getFilters());
+            existingLink.setTags(link.getTags());
+
+            if (existingLink.getFilters() != null) {
+                existingLink.getFilters().forEach(filter -> filter.setLink(existingLink));
+            }
+            if (existingLink.getTags() != null) {
+                existingLink.getTags().forEach(tag -> tag.setLink(existingLink));
+            }
+
+            jpaLinksRepository.save(existingLink);
+        } else {
+            if (link.getFilters() != null) {
+                link.getFilters().forEach(filter -> filter.setLink(link));
+            }
+            if (link.getTags() != null) {
+                link.getTags().forEach(tag -> tag.setLink(link));
+            }
+            jpaLinksRepository.save(link);
+        }
     }
 
     @Transactional

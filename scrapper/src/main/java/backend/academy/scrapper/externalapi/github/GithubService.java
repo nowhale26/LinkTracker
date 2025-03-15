@@ -1,7 +1,7 @@
 package backend.academy.scrapper.externalapi.github;
 
 import backend.academy.scrapper.externalapi.ExternalApi;
-import backend.academy.scrapper.repository.entity.Link;
+import backend.academy.scrapper.repository.model.Link;
 
 public class GithubService implements ExternalApi {
 

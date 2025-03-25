@@ -2,7 +2,7 @@ package backend.academy.scrapper.externalapi.stackoverflow;
 
 import backend.academy.scrapper.common.exception.ScrapperException;
 import backend.academy.scrapper.externalapi.stackoverflow.models.StackoverflowResponse;
-import backend.academy.scrapper.repository.model.Link;
+import backend.academy.scrapper.repository.entity.Link;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatusCode;

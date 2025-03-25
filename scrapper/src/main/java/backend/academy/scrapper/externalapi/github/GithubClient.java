@@ -2,7 +2,7 @@ package backend.academy.scrapper.externalapi.github;
 
 import backend.academy.scrapper.common.exception.ScrapperException;
 import backend.academy.scrapper.externalapi.github.models.GithubResponse;
-import backend.academy.scrapper.repository.model.Link;
+import backend.academy.scrapper.repository.entity.Link;
 import java.net.URI;
 import java.net.URISyntaxException;
 import lombok.extern.slf4j.Slf4j;

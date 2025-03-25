@@ -1,15 +1,15 @@
 package backend.academy.scrapper.repository;
 
-import backend.academy.scrapper.common.exception.BusinessException;
-import backend.academy.scrapper.repository.model.Link;
-import org.springframework.dao.DataAccessException;
+import backend.academy.scrapper.repository.entity.Link;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import java.sql.Timestamp;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+@Slf4j
 public class SqlLinkRepository implements LinkRepository {
 
     private final JdbcTemplate jdbcTemplate;
@@ -32,20 +32,54 @@ public class SqlLinkRepository implements LinkRepository {
     @Override
     public void save(Long tgChatId, Link link) {
         Long userId = getOrCreateUserId(tgChatId);
+        String existingLinkSql = "SELECT id FROM links WHERE user_id = ? AND url = ?";
 
-        String linkSql = "INSERT INTO links (user_id, url, last_updated, site_name) VALUES (?, ?, ?, ?) RETURNING id";
-
-        Long linkId = jdbcTemplate.queryForObject(linkSql, Long.class, userId, link.getUrl(), Timestamp.from(link.getLastUpdated().toInstant()), link.getSiteName());
-
-        if (link.getFilters() != null) {
-            for (var filter : link.getFilters()) {
-                jdbcTemplate.update("INSERT INTO filters (link_id, filter) VALUES (?, ?) ON CONFLICT DO NOTHING", linkId, filter.getFilter());
-            }
+        Long existingLinkId = null;
+        try {
+            existingLinkId = jdbcTemplate.queryForObject(existingLinkSql, Long.class, userId, link.getUrl());
+        } catch (EmptyResultDataAccessException e) {
+            log.info("Ссылка еще не существует");
         }
 
+        Long linkId;
+        if (existingLinkId != null) {
+            String updateSql = "UPDATE links SET last_updated = ?, site_name = ? WHERE id = ?";
+            jdbcTemplate.update(updateSql,
+                Timestamp.from(link.getLastUpdated().toInstant()),
+                link.getSiteName(),
+                existingLinkId
+            );
+            linkId = existingLinkId;
+        } else {
+            String insertSql = "INSERT INTO links (user_id, url, last_updated, site_name) VALUES (?, ?, ?, ?) RETURNING id";
+            linkId = jdbcTemplate.queryForObject(insertSql, Long.class,
+                userId,
+                link.getUrl(),
+                Timestamp.from(link.getLastUpdated().toInstant()),
+                link.getSiteName()
+            );
+        }
+
+        if (link.getFilters() != null) {
+            if (existingLinkId != null) {
+                jdbcTemplate.update("DELETE FROM filters WHERE link_id = ?", linkId);
+            }
+            for (var filter : link.getFilters()) {
+                jdbcTemplate.update("INSERT INTO filters (link_id, filter) VALUES (?, ?) ON CONFLICT DO NOTHING",
+                    linkId,
+                    filter.getFilter()
+                );
+            }
+        }
         if (link.getTags() != null) {
+            if (existingLinkId != null) {
+                jdbcTemplate.update("DELETE FROM tags WHERE link_id = ?", linkId);
+            }
             for (var tag : link.getTags()) {
-                jdbcTemplate.update("INSERT INTO tags (link_id, tag) VALUES (?, ?) ON CONFLICT DO NOTHING", linkId, tag.getTag());
+                jdbcTemplate.update("INSERT INTO tags (link_id, tag) VALUES (?, ?) ON CONFLICT DO NOTHING",
+                    linkId,
+                    tag.getTag()
+                );
             }
         }
 

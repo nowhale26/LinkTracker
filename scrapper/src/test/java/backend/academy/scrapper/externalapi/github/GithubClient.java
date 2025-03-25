@@ -1,7 +1,7 @@
 package backend.academy.scrapper.externalapi.github;
 
 import backend.academy.scrapper.common.exception.ScrapperException;
-import backend.academy.scrapper.repository.model.Link;
+import backend.academy.scrapper.repository.entity.Link;
 import java.time.ZonedDateTime;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;

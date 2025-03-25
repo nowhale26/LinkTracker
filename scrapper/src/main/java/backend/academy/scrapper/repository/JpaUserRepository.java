@@ -1,7 +1,6 @@
 package backend.academy.scrapper.repository;
 
-import java.util.Optional;
-import backend.academy.scrapper.repository.model.User;
+import backend.academy.scrapper.repository.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface JpaUserRepository extends JpaRepository<User, Long> {

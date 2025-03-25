@@ -7,15 +7,14 @@ import backend.academy.scrapper.links.model.LinkResponse;
 import backend.academy.scrapper.links.model.ListLinksResponse;
 import backend.academy.scrapper.links.model.RemoveLinkRequest;
 import backend.academy.scrapper.repository.LinkRepository;
-import backend.academy.scrapper.repository.model.Filter;
-import backend.academy.scrapper.repository.model.Link;
-import backend.academy.scrapper.repository.Repository;
+import backend.academy.scrapper.repository.entity.Filter;
+import backend.academy.scrapper.repository.entity.Link;
 import java.net.URI;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import backend.academy.scrapper.repository.model.Tag;
+import backend.academy.scrapper.repository.entity.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

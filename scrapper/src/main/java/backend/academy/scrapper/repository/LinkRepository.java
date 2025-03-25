@@ -1,6 +1,6 @@
 package backend.academy.scrapper.repository;
 
-import backend.academy.scrapper.repository.model.Link;
+import backend.academy.scrapper.repository.entity.Link;
 import java.util.Set;
 
 public interface LinkRepository {

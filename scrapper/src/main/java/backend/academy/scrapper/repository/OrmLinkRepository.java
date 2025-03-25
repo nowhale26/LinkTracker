@@ -1,7 +1,7 @@
 package backend.academy.scrapper.repository;
 
-import backend.academy.scrapper.repository.model.Link;
-import backend.academy.scrapper.repository.model.User;
+import backend.academy.scrapper.repository.entity.Link;
+import backend.academy.scrapper.repository.entity.User;
 import jakarta.transaction.Transactional;
 import java.util.HashSet;
 import java.util.Set;
@@ -74,7 +74,7 @@ public class OrmLinkRepository implements LinkRepository {
     @Override
     public Set<Link> get(Long tgChatId) {
         Long userId = jpaUserRepository.findByTgChatId(tgChatId).getId();
-        if(userId!=null){
+        if (userId != null) {
             return jpaLinksRepository.findByUserId(userId);
         }
         return new HashSet<>();
@@ -82,7 +82,7 @@ public class OrmLinkRepository implements LinkRepository {
 
     @Override
     public void register(Long tgChatId) {
-        if (jpaUserRepository.findByTgChatId(tgChatId)==null) {
+        if (jpaUserRepository.findByTgChatId(tgChatId) == null) {
             User user = new User();
             user.setTgChatId(tgChatId);
             jpaUserRepository.save(user);

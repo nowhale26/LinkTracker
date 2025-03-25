@@ -4,7 +4,7 @@ import backend.academy.scrapper.common.exception.BusinessException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
-import backend.academy.scrapper.repository.model.Link;
+import backend.academy.scrapper.repository.entity.Link;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 

@@ -7,7 +7,7 @@ import backend.academy.scrapper.BaseTest;
 import backend.academy.scrapper.common.exception.BusinessException;
 import backend.academy.scrapper.links.model.AddLinkRequest;
 import backend.academy.scrapper.links.model.LinkResponse;
-import backend.academy.scrapper.repository.model.Link;
+import backend.academy.scrapper.repository.entity.Link;
 import backend.academy.scrapper.repository.Repository;
 import java.util.List;
 import java.util.Set;

@@ -54,14 +54,14 @@ public class BotListener {
                 updates -> {
                     return handleUpdates(updates);
                 },
-                e -> {
-                    if (e.response() != null) {
+                error -> {
+                    if (error.response() != null) {
                         // got bad response from telegram
-                        log.error("Error code: {}", e.response().errorCode());
-                        log.error("Error description: {}", e.response().description());
+                        log.error("Error code: {}", error.response().errorCode());
+                        log.error("Error description: {}", error.response().description());
                     } else {
                         // probably network error
-                        e.printStackTrace();
+                        error.printStackTrace();
                     }
                 });
     }
@@ -86,7 +86,6 @@ public class BotListener {
                 StatefulMessageExecutor activeExecutor = activeDialogs.get(chatId);
                 if (activeExecutor != null) {
                     activeExecutor.handleUpdate(update);
-                    // Если диалог завершился, убираем из activeDialogs
                     if (!activeExecutor.isChatInDialog(chatId)) {
                         activeDialogs.remove(chatId);
                     }

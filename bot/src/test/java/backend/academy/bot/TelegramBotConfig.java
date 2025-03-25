@@ -25,15 +25,15 @@ public class TelegramBotConfig {
 
         Mockito.when(telegramBot.execute(any(SendMessage.class))).thenAnswer((Answer<MessagesResponse>) invocation -> {
             SendMessage argument = invocation.getArgument(0);
-            // System.out.println("------------------------------- " + argument.getParameters());
             String message = (String) argument.getParameters().get("text");
-            if (UNKNOWN_COMMAND.equals(message)) {
-                throw new BotException(message, "1", message);
+            switch (message) {
+                case "Некорректная ссылка":
+                    throw new BotException(message, "400", message);
+                case UNKNOWN_COMMAND:
+                    throw new BotException(message, "1", message);
+                default:
+                    return null;
             }
-            if ("Некорректная ссылка".equals(message)) {
-                throw new BotException(message, "400", message);
-            }
-            return null;
         });
         return telegramBot;
     }

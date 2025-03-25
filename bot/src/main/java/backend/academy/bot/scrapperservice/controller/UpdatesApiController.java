@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 @Validated
-public interface UpdatesApi {
+public interface UpdatesApiController {
 
     @Operation(
             summary = "Отправить обновление",

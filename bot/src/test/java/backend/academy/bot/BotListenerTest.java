@@ -13,6 +13,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class BotListenerTest extends BaseTest {
     private final BotListener botListener;
+    private final String updateJson =
+            """
+            {
+                "message": {
+                    "text": "/track1 ",
+                    "chat": {
+                        "id": "123"
+                    }
+                }
+            }
+        """;
 
     @Autowired
     public BotListenerTest(BotListener botListener) {
@@ -21,13 +32,7 @@ public class BotListenerTest extends BaseTest {
 
     @Test
     public void handleUpdatesTest() {
-        Update unkownCommmand = BotUtils.parseUpdate("{\n" + "    \"message\": {\n"
-                + "        \"text\": \"/track1 \",\n"
-                + "        \"chat\": {\n"
-                + "            \"id\": \"123\"\n"
-                + "        }\n"
-                + "    }\n"
-                + "}");
+        Update unkownCommmand = BotUtils.parseUpdate(updateJson);
         List<Update> updates = List.of(unkownCommmand);
         try {
             botListener.handleUpdates(updates);

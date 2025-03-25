@@ -26,7 +26,7 @@ public class LinksScheduler {
         Map<String, List<Long>> updatedLinks = service.findUpdatedLinks();
         if (updatedLinks != null) {
             for (var updatedLink : updatedLinks.entrySet()) {
-                LinkUpdate linkUpdate = formLinkUpdate(updatedLink);
+                LinkUpdate linkUpdate = LinkUpdate.formLinkUpdate(updatedLink);
                 try {
                     botClient.sendUpdate(linkUpdate);
                 } catch (ScrapperException e) {
@@ -34,14 +34,5 @@ public class LinksScheduler {
                 }
             }
         }
-    }
-
-    private LinkUpdate formLinkUpdate(Map.Entry<String, List<Long>> updatedLink) {
-        LinkUpdate linkUpdate = new LinkUpdate();
-        linkUpdate.setUrl(updatedLink.getKey());
-        linkUpdate.setTgChatIds(updatedLink.getValue());
-        linkUpdate.setDescription("Обновление");
-        linkUpdate.setId(1L);
-        return linkUpdate;
     }
 }

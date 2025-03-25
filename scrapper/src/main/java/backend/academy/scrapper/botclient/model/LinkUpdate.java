@@ -15,6 +15,7 @@ package backend.academy.scrapper.botclient.model;
 import com.google.gson.annotations.SerializedName;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /** LinkUpdate */
@@ -146,5 +147,14 @@ public class LinkUpdate {
             return "null";
         }
         return o.toString().replace("\n", "\n    ");
+    }
+
+    public static LinkUpdate formLinkUpdate(Map.Entry<String, List<Long>> updatedLink) {
+        LinkUpdate linkUpdate = new LinkUpdate();
+        linkUpdate.setUrl(updatedLink.getKey());
+        linkUpdate.setTgChatIds(updatedLink.getValue());
+        linkUpdate.setDescription("Обновление");
+        linkUpdate.setId(1L);
+        return linkUpdate;
     }
 }

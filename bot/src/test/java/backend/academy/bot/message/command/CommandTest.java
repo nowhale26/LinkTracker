@@ -1,7 +1,7 @@
 package backend.academy.bot.message.command;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
+import static org.junit.Assert.assertThrows;
 
 import backend.academy.bot.BaseTest;
 import backend.academy.bot.common.exception.BotException;
@@ -17,14 +17,19 @@ public class CommandTest extends BaseTest {
     private final TrackCommand trackCommand;
     private final UntrackCommand untrackCommand;
     private final ListCommand listCommand;
+    private final String updateJson =
+            """
+            {
+                "message": {
+                    "text": "/track 123 ",
+                    "chat": {
+                        "id": "123"
+                    }
+                }
+            }
+        """;
 
-    private final Update command = BotUtils.parseUpdate("{\n" + "    \"message\": {\n"
-            + "        \"text\": \"/track 123 \",\n"
-            + "        \"chat\": {\n"
-            + "            \"id\": \"123\"\n"
-            + "        }\n"
-            + "    }\n"
-            + "}");
+    private final Update command = BotUtils.parseUpdate(updateJson);
 
     @Autowired
     public CommandTest(TrackCommand trackCommand, UntrackCommand untrackCommand, ListCommand listCommand) {
@@ -35,32 +40,20 @@ public class CommandTest extends BaseTest {
 
     @Test
     public void trackCommandTest() {
-        try {
-            trackCommand.completeTracking(1L, null);
-            failBecauseExceptionWasNotThrown(BotException.class);
-        } catch (BotException e) {
-            assertThat(e.getMessage()).isEqualTo("Некорректная ссылка на добавление");
-        }
+        BotException exception = assertThrows(BotException.class, () -> trackCommand.completeTracking(1L, null));
+        assertThat(exception.getMessage()).isEqualTo("Некорректная ссылка на добавление");
     }
 
     @Test
     public void unTrackCommandTest() {
-        try {
-            untrackCommand.execute(command, null);
-            failBecauseExceptionWasNotThrown(BotException.class);
-        } catch (BotException e) {
-            assertThat(e.getMessage()).isEqualTo("Некорректная ссылка на удаление");
-        }
+        BotException exception = assertThrows(BotException.class, () -> untrackCommand.execute(command, null));
+        assertThat(exception.getMessage()).isEqualTo("Некорректная ссылка на удаление");
     }
 
     @Test
     public void listCommandTest() {
-        try {
-            listCommand.execute(command, null);
-            failBecauseExceptionWasNotThrown(BotException.class);
-        } catch (BotException e) {
-            assertThat(e.getMessage()).isEqualTo("Некорректная ссылка на получение");
-        }
+        BotException exception = assertThrows(BotException.class, () -> listCommand.execute(command, null));
+        assertThat(exception.getMessage()).isEqualTo("Некорректная ссылка на получение");
     }
 
     @Test

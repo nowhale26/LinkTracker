@@ -13,8 +13,8 @@ public class LinkValidator {
     private final Map<String, ExternalApiValidator> validators = new HashMap<>();
 
     public LinkValidator(List<ExternalApiValidator> validatorList) {
-        for (var validtor : validatorList) {
-            validators.put(validtor.getSiteName(), validtor);
+        for (var validator : validatorList) {
+            validators.put(validator.getSiteName(), validator);
         }
     }
 

@@ -1,76 +1,82 @@
 package backend.academy.scrapper.scheduler;
 
-import backend.academy.scrapper.common.exception.ScrapperException;
-import backend.academy.scrapper.externalapi.ExternalApi;
+import backend.academy.scrapper.botclient.model.LinkUpdate;
+import backend.academy.scrapper.externalapi.ExternalApiRequest;
+import backend.academy.scrapper.externalapi.ExternalApiResponse;
 import backend.academy.scrapper.externalapi.github.GithubClient;
+import backend.academy.scrapper.repository.LinkRepository;
 import backend.academy.scrapper.repository.entity.Link;
-import backend.academy.scrapper.repository.Repository;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
 public class SchedulerService {
+    private final int pageSize = 50;
 
     @Autowired
-    private GithubClient githubClient;
+    private LinkRepository repository;
 
-    @Autowired
-    private Repository repository;
+    private final Map<String, List<ExternalApiRequest>> externalApiMap = new HashMap<>();
 
-    private final Map<String, ExternalApi> externalApiMap = new HashMap<>();
-
-    public SchedulerService(List<ExternalApi> externalApiList) {
-        for (var externalApi : externalApiList) {
-            externalApiMap.put(externalApi.getSiteName(), externalApi);
+    public SchedulerService(List<ExternalApiRequest> externalApiRequestList) {
+        for (var externalApi : externalApiRequestList) {
+            if (externalApiMap.containsKey(externalApi.getSiteName())) {
+                externalApiMap.get(externalApi.getSiteName()).add(externalApi);
+            } else {
+                List<ExternalApiRequest> externalApiList = new ArrayList<>();
+                externalApiList.add(externalApi);
+                externalApiMap.put(externalApi.getSiteName(), externalApiList);
+            }
         }
     }
 
-    public Map<String, List<Long>> findUpdatedLinks() {
-        Map<Long, Set<Link>> linksRepository = repository.getRepository();
-        if (linksRepository == null) {
-            return null;
+    @Transactional
+    public List<LinkUpdate> findUpdatedLinks() {
+        int pageNumber = 0;
+        boolean hasNextPage = true;
+        List<LinkUpdate> updates = new ArrayList<>();
+        while (hasNextPage) {
+            Page<Link> currentPage = repository.getPagedLinks(pageNumber + 1, pageSize);
+            for (var link : currentPage.getContent()) {
+                checkLinkUpdate(link, updates);
+            }
+            hasNextPage = currentPage.hasNext();
+            pageNumber++;
         }
-        Map<String, List<Long>> updatedLinks = new HashMap<>();
-        Map<Long, Set<Link>> linksToUpdate = new HashMap<>(); // Временное хранилище для обновлений
 
-        for (var linksEntry : linksRepository.entrySet()) {
-            Set<Link> updatedSet = new HashSet<>(); // Копия для обновлений
-            for (var link : linksEntry.getValue()) {
-                ZonedDateTime update;
-                String siteName = link.getSiteName();
-                if (siteName != null) {
-                    try {
-                        update = ZonedDateTime.parse(externalApiMap.get(siteName).checkLinkUpdate(link));
-                    } catch (ScrapperException e) {
-                        log.error("Error message: {}", e.getMessage());
-                        continue;
-                    }
-                    if (update != null && update.isAfter(link.getLastUpdated())) {
-                        link.setLastUpdated(update);
-                        updatedSet.add(link); // Сохраняем во временный набор
-                        List<Long> iDs = updatedLinks.computeIfAbsent(link.getUrl(), k -> new ArrayList<>());
-                        iDs.add(linksEntry.getKey());
-                    }
+        return updates;
+    }
+
+    @Transactional
+    public void checkLinkUpdate(Link link, List<LinkUpdate> updates) {
+        boolean updated= false;
+        for (var externalApi : externalApiMap.get(link.getSiteName())) {
+            ExternalApiResponse response = externalApi.checkUpdate(link);
+            if (response != null) {
+                if(response.getCreatedAt().isAfter(link.getLastUpdated())){
+                    LinkUpdate update = new LinkUpdate();
+                    update.setId(link.getId());
+                    update.setUrl(link.getUrl());
+                    update.setDescription(externalApi.formMessage(response, link));
+                    update.setTgChatIds(repository.getTgChatIdsByLink(link));
+                    updates.add(update);
+                    updated = true;
                 }
             }
-            if (!updatedSet.isEmpty()) {
-                linksToUpdate.put(linksEntry.getKey(), updatedSet);
-            }
         }
-
-        for (var entry : linksToUpdate.entrySet()) {
-            repository.save(entry.getKey(), entry.getValue().iterator().next());
+        if(updated) {
+            link.setLastUpdated(ZonedDateTime.now());
+            Long tgchatId = repository.getTgChatIdById(link.getUserId());
+            repository.save(tgchatId,link);
         }
-
-        return updatedLinks;
     }
 }

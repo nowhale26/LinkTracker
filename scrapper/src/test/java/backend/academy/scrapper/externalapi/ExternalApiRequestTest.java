@@ -12,14 +12,14 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class ExternalApiTest extends BaseTest {
+public class ExternalApiRequestTest extends BaseTest {
 
     private final SchedulerService schedulerService;
     private final LinksService linksService;
     private final Repository repository;
 
     @Autowired
-    public ExternalApiTest(SchedulerService schedulerService, LinksService linksService, Repository repository) {
+    public ExternalApiRequestTest(SchedulerService schedulerService, LinksService linksService, Repository repository) {
         this.schedulerService = schedulerService;
         this.linksService = linksService;
         this.repository = repository;

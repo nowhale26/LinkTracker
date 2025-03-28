@@ -3,9 +3,11 @@ package backend.academy.scrapper.repository;
 import backend.academy.scrapper.common.exception.BusinessException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import backend.academy.scrapper.repository.entity.Link;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -56,6 +58,26 @@ public class Repository implements LinkRepository {
     public void register(Long userId) {
         Set<Link> links = new HashSet<>();
         repository.put(userId, links);
+    }
+
+    @Override
+    public List<Link> getAllLinks() {
+        return List.of();
+    }
+
+    @Override
+    public Page<Link> getPagedLinks(int pageNumber, int pageSize) {
+        return null;
+    }
+
+    @Override
+    public List<Long> getTgChatIdsByLink(Link link) {
+        return List.of();
+    }
+
+    @Override
+    public Long getTgChatIdById(Long id) {
+        return 0L;
     }
 
     public HashMap<Long, Set<Link>> getRepository() {

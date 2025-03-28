@@ -3,6 +3,9 @@ package backend.academy.scrapper.repository;
 import backend.academy.scrapper.repository.entity.Link;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import java.sql.Timestamp;
 import java.util.Arrays;
@@ -125,5 +128,69 @@ public class SqlLinkRepository implements LinkRepository {
     public void register(Long tgChatId) {
         String sql = "INSERT INTO users (tg_chat_id) VALUES (?) ON CONFLICT DO NOTHING";
         jdbcTemplate.update(sql, tgChatId);
+    }
+
+    @Override
+    public List<Link> getAllLinks() {
+        String sql = "SELECT * FROM links";
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            Link link = new Link();
+            link.setId(rs.getLong("id"));
+            link.setUserId(rs.getLong("user_id"));
+            link.setUrl(rs.getString("url"));
+            link.setLastUpdated(rs.getTimestamp("last_updated").toInstant().atZone(java.time.ZoneId.systemDefault()));
+            link.setSiteName(rs.getString("site_name"));
+            return link;
+        });
+    }
+
+    @Override
+    public Page<Link> getPagedLinks(int pageNumber, int pageSize) {
+        int offset = (pageNumber - 1) * pageSize;
+
+        String countSql = "SELECT COUNT(*) FROM links";
+        long totalLinks = jdbcTemplate.queryForObject(countSql, Long.class);
+
+        String sql = "SELECT * FROM links LIMIT ? OFFSET ?";
+        List<Link> links = jdbcTemplate.query(
+            sql,
+            (rs, rowNum) -> {
+                Link link = new Link();
+                link.setId(rs.getLong("id"));
+                link.setUserId(rs.getLong("user_id"));
+                link.setUrl(rs.getString("url"));
+                link.setLastUpdated(rs.getTimestamp("last_updated").toInstant().atZone(java.time.ZoneId.systemDefault()));
+                link.setSiteName(rs.getString("site_name"));
+                return link;
+            },
+            pageSize, offset
+        );
+
+        int totalPages = (int) Math.ceil((double) totalLinks / pageSize);
+        return new PageImpl<>(
+            links,
+            PageRequest.of(pageNumber - 1, pageSize),
+            totalLinks
+        );
+    }
+
+    @Override
+    public List<Long> getTgChatIdsByLink(Link link) {
+        String sql = """
+            SELECT u.tg_chat_id
+            FROM users u
+            JOIN links l ON u.id = l.user_id
+            WHERE l.url = ?
+            """;
+
+        return jdbcTemplate.query(sql,
+            (rs, rowNum) -> rs.getLong("tg_chat_id"),
+            link.getUrl());
+    }
+
+    @Override
+    public Long getTgChatIdById(Long id) {
+        String sql = "SELECT tg_chat_id FROM users WHERE id = ?";
+        return jdbcTemplate.queryForObject(sql, Long.class, id);
     }
 }

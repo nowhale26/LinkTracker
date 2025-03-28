@@ -12,11 +12,13 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 @Table(name = "links")
 public class Link {
@@ -28,6 +30,7 @@ public class Link {
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
+    @EqualsAndHashCode.Include
     @Column(name = "url", nullable = false)
     private String url;
 
@@ -42,17 +45,4 @@ public class Link {
 
     @OneToMany(mappedBy = "link", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Tag> tags = new ArrayList<>();
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Link link = (Link) o;
-        return Objects.equals(url, link.url);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(url);
-    }
 }

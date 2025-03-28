@@ -5,6 +5,8 @@ import backend.academy.scrapper.botclient.model.LinkUpdate;
 import backend.academy.scrapper.common.exception.ScrapperException;
 import java.util.List;
 import java.util.Map;
+import backend.academy.scrapper.externalapi.github.apirequest.PRRequest;
+import backend.academy.scrapper.repository.entity.Link;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -21,14 +23,13 @@ public class LinksScheduler {
     private BotClient botClient;
 
     // fixedDelay = 3600000, initialDelay = 3600000 раз в час
-    @Scheduled(fixedDelay = 60000, initialDelay = 60000) // fixedDelay = 60000, initialDelay = 60000 раз в минуту
+    @Scheduled(fixedDelay = 60000, initialDelay = 0000) // fixedDelay = 60000, initialDelay = 60000 раз в минуту
     public void checkAllUpdates() {
-        Map<String, List<Long>> updatedLinks = service.findUpdatedLinks();
-        if (updatedLinks != null) {
-            for (var updatedLink : updatedLinks.entrySet()) {
-                LinkUpdate linkUpdate = LinkUpdate.formLinkUpdate(updatedLink);
+        List<LinkUpdate> updates = service.findUpdatedLinks();
+        if (updates != null) {
+            for (var update : updates) {
                 try {
-                    botClient.sendUpdate(linkUpdate);
+                    botClient.sendUpdate(update);
                 } catch (ScrapperException e) {
                     log.error("Error message: {}", e.getMessage());
                 }

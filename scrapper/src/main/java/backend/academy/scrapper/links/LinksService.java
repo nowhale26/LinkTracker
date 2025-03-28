@@ -2,6 +2,7 @@ package backend.academy.scrapper.links;
 
 import backend.academy.scrapper.common.exception.BusinessException;
 import backend.academy.scrapper.common.validator.LinkValidator;
+import backend.academy.scrapper.externalapi.github.apirequest.PRRequest;
 import backend.academy.scrapper.links.model.AddLinkRequest;
 import backend.academy.scrapper.links.model.LinkResponse;
 import backend.academy.scrapper.links.model.ListLinksResponse;
@@ -10,6 +11,7 @@ import backend.academy.scrapper.repository.LinkRepository;
 import backend.academy.scrapper.repository.entity.Filter;
 import backend.academy.scrapper.repository.entity.Link;
 import java.net.URI;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +50,7 @@ public class LinksService {
             }
         }
         link.setFilters(filters);
-        link.setLastUpdated(ZonedDateTime.now());
+        link.setLastUpdated(ZonedDateTime.of(2010, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault()));
         extractSiteName(link);
         validator.validateLink(link);
         repository.save(tgChatId, link);

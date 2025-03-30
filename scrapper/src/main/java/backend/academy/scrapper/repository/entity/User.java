@@ -20,4 +20,7 @@ public class User {
 
     @Column(name = "tg_chat_id", unique = true, nullable = false)
     private Long tgChatId;
+
+    @Column(name = "enable_tag_in_updates", nullable = false)
+    private boolean enableTagInUpdates;
 }

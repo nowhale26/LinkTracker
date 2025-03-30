@@ -1,0 +1,20 @@
+
+spring:
+  datasource:
+    url: jdbc:tc:postgresql:15:///scrapper
+  liquibase:
+    enabled: false
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+
+app:
+  github-token: test-token
+  stackoverflow:
+    key: test-key
+    access-token: test-token
+  github-url: https://api.github.com/repos
+  stackoverflow-url: https://api.stackexchange.com/2.3/questions
+  bot-url: http://localhost:8080
+  access-type: ORM

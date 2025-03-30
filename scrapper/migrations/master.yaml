@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - include:
+      file: changesets/create-user-table.sql
+  - include:
+      file: changesets/create-link-table.sql
+  - include:
+      file: changesets/create-filter-table.sql
+  - include:
+      file: changesets/create-tag-table.sql

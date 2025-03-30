@@ -3,7 +3,6 @@ package backend.academy.scrapper.scheduler;
 import backend.academy.scrapper.botclient.model.LinkUpdate;
 import backend.academy.scrapper.externalapi.ExternalApiRequest;
 import backend.academy.scrapper.externalapi.ExternalApiResponse;
-import backend.academy.scrapper.externalapi.github.GithubClient;
 import backend.academy.scrapper.repository.LinkRepository;
 import backend.academy.scrapper.repository.entity.Link;
 import java.time.ZonedDateTime;
@@ -11,6 +10,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,8 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 public class SchedulerService {
-    private final int pageSize = 50;
+    private final int PAGE_SIZE = 1000;
+    private final int THREADS = 4;
 
     @Autowired
     private LinkRepository repository;
@@ -39,44 +41,25 @@ public class SchedulerService {
         }
     }
 
-    @Transactional
     public List<LinkUpdate> findUpdatedLinks() {
         int pageNumber = 0;
         boolean hasNextPage = true;
         List<LinkUpdate> updates = new ArrayList<>();
-        while (hasNextPage) {
-            Page<Link> currentPage = repository.getPagedLinks(pageNumber + 1, pageSize);
-            for (var link : currentPage.getContent()) {
-                checkLinkUpdate(link, updates);
+        try (ExecutorService executor = Executors.newFixedThreadPool(THREADS)) {
+            while (hasNextPage) {
+                Page<Link> currentPage = repository.getPagedLinks(pageNumber, PAGE_SIZE);
+                List<Link> links = currentPage.getContent();
+                for (var link : links) {
+                    LinkUpdateChecker checker = new LinkUpdateChecker(link, externalApiMap, repository, updates);
+                    executor.submit(checker::run);
+                }
+                hasNextPage = currentPage.hasNext();
+                pageNumber++;
             }
-            hasNextPage = currentPage.hasNext();
-            pageNumber++;
+            executor.shutdown();
         }
 
         return updates;
     }
 
-    @Transactional
-    public void checkLinkUpdate(Link link, List<LinkUpdate> updates) {
-        boolean updated= false;
-        for (var externalApi : externalApiMap.get(link.getSiteName())) {
-            ExternalApiResponse response = externalApi.checkUpdate(link);
-            if (response != null) {
-                if(response.getCreatedAt().isAfter(link.getLastUpdated())){
-                    LinkUpdate update = new LinkUpdate();
-                    update.setId(link.getId());
-                    update.setUrl(link.getUrl());
-                    update.setDescription(externalApi.formMessage(response, link));
-                    update.setTgChatIds(repository.getTgChatIdsByLink(link));
-                    updates.add(update);
-                    updated = true;
-                }
-            }
-        }
-        if(updated) {
-            link.setLastUpdated(ZonedDateTime.now());
-            Long tgchatId = repository.getTgChatIdById(link.getUserId());
-            repository.save(tgchatId,link);
-        }
-    }
 }

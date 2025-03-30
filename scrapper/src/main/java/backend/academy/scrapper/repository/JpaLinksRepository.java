@@ -13,6 +13,7 @@ public interface JpaLinksRepository extends JpaRepository<Link, Long> {
     Set<Link> findByUserId(Long userId);
     void deleteByUserIdAndUrl(Long userId, String url);
     Link findByUserIdAndUrl(Long userId, String url);
+    //@Query("SELECT l FROM Link l LEFT JOIN FETCH l.tags LEFT JOIN FETCH l.filters")
     Page<Link> findAll(Pageable pageable);
 
     @Query("SELECT l.userId FROM Link l WHERE l.url = :url")

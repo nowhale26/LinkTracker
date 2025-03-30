@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import backend.academy.scrapper.repository.entity.Link;
+import backend.academy.scrapper.repository.entity.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
@@ -71,13 +72,23 @@ public class Repository implements LinkRepository {
     }
 
     @Override
-    public List<Long> getTgChatIdsByLink(Link link) {
-        return List.of();
+    public Long getTgChatIdByLink(Link link) {
+        return 0L;
     }
 
     @Override
     public Long getTgChatIdById(Long id) {
         return 0L;
+    }
+
+    @Override
+    public void save(Long tgchatId, boolean enableTagInUpdates) {
+
+    }
+
+    @Override
+    public User getUserByTgChatId(Long tgChatId) {
+        return null;
     }
 
     public HashMap<Long, Set<Link>> getRepository() {

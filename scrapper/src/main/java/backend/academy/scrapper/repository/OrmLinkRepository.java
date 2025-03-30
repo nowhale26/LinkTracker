@@ -8,6 +8,7 @@ import org.springframework.data.domain.PageRequest;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public class OrmLinkRepository implements LinkRepository {
@@ -40,15 +41,20 @@ public class OrmLinkRepository implements LinkRepository {
         Link existingLink = jpaLinksRepository.findByUserIdAndUrl(userId, link.getUrl());
 
         if (existingLink != null) {
-            existingLink.setFilters(link.getFilters());
-            existingLink.setTags(link.getTags());
             existingLink.setLastUpdated(link.getLastUpdated());
-
-            if (existingLink.getFilters() != null) {
-                existingLink.getFilters().forEach(filter -> filter.setLink(existingLink));
+            if (link.getFilters() != null) {
+                existingLink.getFilters().clear();
+                link.getFilters().forEach(filter -> {
+                    filter.setLink(existingLink);
+                    existingLink.getFilters().add(filter);
+                });
             }
-            if (existingLink.getTags() != null) {
-                existingLink.getTags().forEach(tag -> tag.setLink(existingLink));
+            if (link.getTags() != null) {
+                existingLink.getTags().clear();
+                link.getTags().forEach(tag -> {
+                    tag.setLink(existingLink);
+                    existingLink.getTags().add(tag);
+                });
             }
 
             jpaLinksRepository.save(existingLink);
@@ -102,17 +108,15 @@ public class OrmLinkRepository implements LinkRepository {
 
     @Override
     public Page<Link> getPagedLinks(int pageNumber, int pageSize) {
-        return jpaLinksRepository.findAll(PageRequest.of(pageNumber - 1, pageSize));
+        return jpaLinksRepository.findAll(PageRequest.of(pageNumber, pageSize));
     }
 
     @Override
-    public List<Long> getTgChatIdsByLink(Link link) {
+    public Long getTgChatIdByLink(Link link) {
         List<Long> tgChatIds = new ArrayList<>();
-        Set<Long> userIDs = jpaLinksRepository.findUserIdsByUrl(link.getUrl());
-        for(var id : userIDs) {
-            tgChatIds.add(jpaUserRepository.findById(id).get().getTgChatId());
-        }
-        return tgChatIds;
+        Long userID = link.getUserId();
+        Long tgChatId = jpaUserRepository.findById(userID).get().getTgChatId();
+        return tgChatId;
     }
 
     @Override
@@ -121,5 +125,24 @@ public class OrmLinkRepository implements LinkRepository {
             return jpaUserRepository.findById(id).get().getTgChatId();
         }
         return null;
+    }
+
+    @Override
+    public void save(Long tgChatId, boolean enableTagInUpdates) {
+        User existingUser = jpaUserRepository.findByTgChatId(tgChatId);
+        if (existingUser!=null) {
+            existingUser.setEnableTagInUpdates(enableTagInUpdates);
+            jpaUserRepository.save(existingUser);
+        } else {
+            User user = new User();
+            user.setTgChatId(tgChatId);
+            user.setEnableTagInUpdates(enableTagInUpdates);
+            jpaUserRepository.save(user);
+        }
+    }
+
+    @Override
+    public User getUserByTgChatId(Long tgChatId) {
+        return jpaUserRepository.findByTgChatId(tgChatId);
     }
 }

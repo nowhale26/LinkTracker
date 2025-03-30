@@ -4,6 +4,7 @@ import backend.academy.scrapper.common.exception.BusinessException;
 import backend.academy.scrapper.common.validator.LinkValidator;
 import backend.academy.scrapper.externalapi.github.apirequest.PRRequest;
 import backend.academy.scrapper.links.model.AddLinkRequest;
+import backend.academy.scrapper.links.model.EnableTagRequest;
 import backend.academy.scrapper.links.model.LinkResponse;
 import backend.academy.scrapper.links.model.ListLinksResponse;
 import backend.academy.scrapper.links.model.RemoveLinkRequest;
@@ -14,6 +15,7 @@ import java.net.URI;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import backend.academy.scrapper.repository.entity.Tag;
@@ -32,7 +34,7 @@ public class LinksService {
     public LinkResponse addLink(Long tgChatId, AddLinkRequest body) {
         Link link = new Link();
         link.setUrl(body.getLink());
-        List<Tag> tags = new ArrayList<>();
+        Set<Tag> tags = new HashSet<>();
         if (body.getTags() != null) {
             for (String stringTag : body.getTags()) {
                 Tag tag = new Tag();
@@ -41,7 +43,7 @@ public class LinksService {
             }
         }
         link.setTags(tags);
-        List<Filter> filters = new ArrayList<>();
+        Set<Filter> filters = new HashSet<>();
         if (body.getFilters() != null) {
             for (String stringFilter : body.getFilters()) {
                 Filter filter = new Filter();
@@ -50,7 +52,8 @@ public class LinksService {
             }
         }
         link.setFilters(filters);
-        link.setLastUpdated(ZonedDateTime.of(2010, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault()));
+        //link.setLastUpdated(ZonedDateTime.of(2010, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault()));
+        link.setLastUpdated(ZonedDateTime.now());
         extractSiteName(link);
         validator.validateLink(link);
         repository.save(tgChatId, link);
@@ -87,6 +90,10 @@ public class LinksService {
 
     public void deleteChat(Long id) {
         repository.delete(id);
+    }
+
+    public void enableTagInUpdates(Long tgChatId, boolean enableTagInUpdates) {
+        repository.save(tgChatId, enableTagInUpdates);
     }
 
     private LinkResponse createResponse(Long userId, Link link, List<String> filters, List<String> tags) {

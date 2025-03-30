@@ -2,11 +2,14 @@ package backend.academy.scrapper.repository.entity;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -40,9 +43,9 @@ public class Link {
     @Column(name = "site_name")
     private String siteName;
 
-    @OneToMany(mappedBy = "link", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Filter> filters = new ArrayList<>();
+    @OneToMany(mappedBy = "link", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private Set<Filter> filters = new HashSet<>();
 
-    @OneToMany(mappedBy = "link", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Tag> tags = new ArrayList<>();
+    @OneToMany(mappedBy = "link", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private Set<Tag> tags = new HashSet<>();
 }

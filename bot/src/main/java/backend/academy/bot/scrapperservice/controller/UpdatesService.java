@@ -15,9 +15,7 @@ public class UpdatesService {
     }
 
     public void sendUpdate(LinkUpdate update) {
-        for (var tgChatId : update.getTgChatIds()) {
-            String message = "Сообщение: \n\n" + update.getDescription();
-            bot.execute(new SendMessage(tgChatId, message));
-        }
+        String message = "Обновление: \n\n" + update.getDescription();
+        bot.execute(new SendMessage(update.getTgChatId(), message));
     }
 }

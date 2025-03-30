@@ -1,6 +1,7 @@
 package backend.academy.scrapper.repository;
 
 import backend.academy.scrapper.repository.entity.Link;
+import backend.academy.scrapper.repository.entity.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
@@ -175,22 +176,30 @@ public class SqlLinkRepository implements LinkRepository {
     }
 
     @Override
-    public List<Long> getTgChatIdsByLink(Link link) {
+    public Long getTgChatIdByLink(Link link) {
+        Long userID = link.getUserId();
         String sql = """
-            SELECT u.tg_chat_id
-            FROM users u
-            JOIN links l ON u.id = l.user_id
-            WHERE l.url = ?
+            SELECT tg_chat_id
+            FROM users
+            WHERE id = ?
             """;
 
-        return jdbcTemplate.query(sql,
-            (rs, rowNum) -> rs.getLong("tg_chat_id"),
-            link.getUrl());
+        return jdbcTemplate.queryForObject(sql, Long.class, userID);
     }
 
     @Override
     public Long getTgChatIdById(Long id) {
         String sql = "SELECT tg_chat_id FROM users WHERE id = ?";
         return jdbcTemplate.queryForObject(sql, Long.class, id);
+    }
+
+    @Override
+    public void save(Long tgchatId, boolean enableTagInUpdates) {
+
+    }
+
+    @Override
+    public User getUserByTgChatId(Long tgChatId) {
+        return null;
     }
 }

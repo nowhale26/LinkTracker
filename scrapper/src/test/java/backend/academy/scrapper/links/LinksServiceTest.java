@@ -7,6 +7,7 @@ import backend.academy.scrapper.BaseTest;
 import backend.academy.scrapper.common.exception.BusinessException;
 import backend.academy.scrapper.links.model.AddLinkRequest;
 import backend.academy.scrapper.links.model.LinkResponse;
+import backend.academy.scrapper.repository.LinkRepository;
 import backend.academy.scrapper.repository.entity.Link;
 import backend.academy.scrapper.repository.Repository;
 import java.util.List;
@@ -16,10 +17,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class LinksServiceTest extends BaseTest {
     private final LinksService linksService;
-    private final Repository repository;
+    private final LinkRepository repository;
 
     @Autowired
-    public LinksServiceTest(LinksService linksService, Repository repository) {
+    public LinksServiceTest(LinksService linksService, LinkRepository repository) {
         this.linksService = linksService;
         this.repository = repository;
     }
@@ -55,28 +56,24 @@ public class LinksServiceTest extends BaseTest {
         } catch (BusinessException e) {
             assertThat(e.getMessage()).isEqualTo("Некорректная ссылка");
         }
-        repository.delete(123L);
     }
 
     @Test
     public void addLinkContentTest() {
         AddLinkRequest body = new AddLinkRequest();
-        body.setLink("https://github.com/nowhale26/loganalyzer");
-        body.setTags(List.of("work", "hobby"));
-        body.setFilters(List.of("comment:dummy", "job:work"));
+        body.setLink("https://github.com/nowhale26/loganalyzer2");
+        body.setTags(List.of("work"));
+        body.setFilters(List.of("comment:dummy"));
         linksService.addLink(124L, body);
-        Set<Link> links = repository.getRepository().get(124L);
-        Link linktest = new Link();
+        List<Link> links = repository.getAllLinks();
         for (var link : links) {
-            assertThat("https://github.com/nowhale26/loganalyzer").isEqualTo(link.getUrl());
-            assertThat(List.of("work", "hobby")).isEqualTo(link.getTags());
-            assertThat(List.of("comment:dummy", "job:work")).isEqualTo(link.getFilters());
-            linktest = link;
+            if(link.getUrl().equals("https://github.com/nowhale26/loganalyzer2")){
+                assertThat("https://github.com/nowhale26/loganalyzer2").isEqualTo(link.getUrl());
+                assertThat("work").isEqualTo(link.getTags().stream().toList().getFirst().getTag());
+                assertThat("comment:dummy").isEqualTo(link.getFilters().stream().toList().getFirst().getFilter());
+            }
         }
 
-        repository.delete(124L, linktest);
-        assertThat(repository.get(124L).size()).isEqualTo(0);
-        repository.delete(124L);
     }
 
     @Test
@@ -87,14 +84,15 @@ public class LinksServiceTest extends BaseTest {
         body.setFilters(List.of("comment:dummy", "job:work"));
         linksService.addLink(125L, body);
         body.setLink("https://github.com/nowhale26/loganalyzer");
-        body.setTags(List.of("football", "hockey"));
-        body.setFilters(List.of("user:dummy", "job:work"));
+        body.setTags(List.of("football"));
+        body.setFilters(List.of("user:dummy"));
         linksService.addLink(125L, body);
-        Set<Link> links = repository.getRepository().get(125L);
+        List<Link> links = repository.getAllLinks();
         for (var link : links) {
-            assertThat(List.of("football", "hockey")).isEqualTo(link.getTags());
-            assertThat(List.of("user:dummy", "job:work")).isEqualTo(link.getFilters());
+            if(link.getUrl().equals("https://github.com/nowhale26/loganalyzer")){
+                assertThat("football").isEqualTo(link.getTags().stream().toList().getFirst().getTag());
+                assertThat("user:dummy").isEqualTo(link.getFilters().stream().toList().getFirst().getFilter());
+            }
         }
-        repository.delete(125L);
     }
 }

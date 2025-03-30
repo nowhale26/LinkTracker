@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  liquibase-migrations:
+    container_name: migrations
+    image: liquibase/liquibase:4.29
+    depends_on:
+      - postgresql
+    command:
+      - --searchPath=/changesets
+      - --changelog-file=master.yaml
+      - --driver=org.postgresql.Driver
+      - --url=jdbc:postgresql://postgresql:5432/scrapper
+      - --username=postgres
+      - --password=postgres
+      - update
+    volumes:
+      - ./migrations:/changesets
+    networks:
+      - backend
+
+  postgresql:
+    container_name: postgresql
+    image: postgres:15
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=scrapper
+    ports:
+      - "5433:5432"
+    networks:
+      - backend
+networks:
+  backend:
+    driver: bridge

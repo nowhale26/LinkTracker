@@ -1,8 +1,11 @@
 app:
-  github-token: ${GITHUB_TOKEN} # env variable
+  github-token: test-token # env variable
   stackoverflow:
     key: ${SO_TOKEN_KEY}
     access-token: ${SO_ACCESS_TOKEN}
+  github-url: https://api.github.com/repos
+  stackoverflow-url: https://api.stackexchange.com/2.3/questions
+  bot-url: http://localhost:8080
 
 spring:
   application:
@@ -21,3 +24,8 @@ springdoc:
   swagger-ui:
     enabled: true
     path: /swagger-ui
+
+logging:
+  structured:
+    format:
+      console: ecs

@@ -4,10 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import backend.academy.scrapper.BaseTest;
 import backend.academy.scrapper.botclient.model.LinkUpdate;
-import backend.academy.scrapper.externalapi.github.GithubClient;
 import backend.academy.scrapper.links.LinksService;
 import backend.academy.scrapper.links.model.AddLinkRequest;
-import backend.academy.scrapper.repository.Repository;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +15,7 @@ public class SchedulerServiceTest extends BaseTest {
     private final LinksService linksService;
 
     @Autowired
-    public SchedulerServiceTest(
-            SchedulerService schedulerService,
-            GithubClient githubClient,
-            LinksService linksService,
-            Repository repository) {
+    public SchedulerServiceTest(SchedulerService schedulerService, LinksService linksService) {
         this.schedulerService = schedulerService;
         this.linksService = linksService;
     }

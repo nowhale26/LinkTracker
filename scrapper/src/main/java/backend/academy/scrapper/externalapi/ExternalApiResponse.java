@@ -1,7 +1,7 @@
 package backend.academy.scrapper.externalapi;
 
-import lombok.Data;
 import java.time.ZonedDateTime;
+import lombok.Data;
 
 @Data
 public class ExternalApiResponse {

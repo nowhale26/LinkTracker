@@ -9,9 +9,7 @@ import backend.academy.scrapper.links.model.AddLinkRequest;
 import backend.academy.scrapper.links.model.LinkResponse;
 import backend.academy.scrapper.repository.LinkRepository;
 import backend.academy.scrapper.repository.entity.Link;
-import backend.academy.scrapper.repository.Repository;
 import java.util.List;
-import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -67,13 +65,15 @@ public class LinksServiceTest extends BaseTest {
         linksService.addLink(124L, body);
         List<Link> links = repository.getAllLinks();
         for (var link : links) {
-            if(link.getUrl().equals("https://github.com/nowhale26/loganalyzer2")){
+            if (link.getUrl().equals("https://github.com/nowhale26/loganalyzer2")) {
                 assertThat("https://github.com/nowhale26/loganalyzer2").isEqualTo(link.getUrl());
-                assertThat("work").isEqualTo(link.getTags().stream().toList().getFirst().getTag());
-                assertThat("comment:dummy").isEqualTo(link.getFilters().stream().toList().getFirst().getFilter());
+                assertThat("work")
+                        .isEqualTo(link.getTags().stream().toList().getFirst().getTag());
+                assertThat("comment:dummy")
+                        .isEqualTo(
+                                link.getFilters().stream().toList().getFirst().getFilter());
             }
         }
-
     }
 
     @Test
@@ -89,9 +89,12 @@ public class LinksServiceTest extends BaseTest {
         linksService.addLink(125L, body);
         List<Link> links = repository.getAllLinks();
         for (var link : links) {
-            if(link.getUrl().equals("https://github.com/nowhale26/loganalyzer")){
-                assertThat("football").isEqualTo(link.getTags().stream().toList().getFirst().getTag());
-                assertThat("user:dummy").isEqualTo(link.getFilters().stream().toList().getFirst().getFilter());
+            if (link.getUrl().equals("https://github.com/nowhale26/loganalyzer")) {
+                assertThat("football")
+                        .isEqualTo(link.getTags().stream().toList().getFirst().getTag());
+                assertThat("user:dummy")
+                        .isEqualTo(
+                                link.getFilters().stream().toList().getFirst().getFilter());
             }
         }
     }

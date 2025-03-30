@@ -2,8 +2,8 @@ package backend.academy.scrapper.externalapi.stackoverflow.apirequest;
 
 import backend.academy.scrapper.externalapi.ExternalApiRequest;
 import backend.academy.scrapper.repository.entity.Link;
-import org.springframework.web.util.UriTemplate;
 import java.util.Map;
+import org.springframework.web.util.UriTemplate;
 
 public interface StackoverflowApiRequest extends ExternalApiRequest {
 

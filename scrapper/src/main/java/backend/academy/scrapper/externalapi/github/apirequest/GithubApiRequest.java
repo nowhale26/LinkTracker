@@ -2,8 +2,6 @@ package backend.academy.scrapper.externalapi.github.apirequest;
 
 import backend.academy.scrapper.common.exception.ScrapperException;
 import backend.academy.scrapper.externalapi.ExternalApiRequest;
-import backend.academy.scrapper.externalapi.ExternalApiResponse;
-import backend.academy.scrapper.externalapi.github.models.GithubResponse;
 import backend.academy.scrapper.repository.entity.Link;
 import java.net.URI;
 import java.net.URISyntaxException;

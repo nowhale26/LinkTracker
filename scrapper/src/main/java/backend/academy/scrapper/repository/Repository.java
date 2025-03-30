@@ -1,12 +1,12 @@
 package backend.academy.scrapper.repository;
 
 import backend.academy.scrapper.common.exception.BusinessException;
+import backend.academy.scrapper.repository.entity.Link;
+import backend.academy.scrapper.repository.entity.User;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import backend.academy.scrapper.repository.entity.Link;
-import backend.academy.scrapper.repository.entity.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
@@ -82,9 +82,7 @@ public class Repository implements LinkRepository {
     }
 
     @Override
-    public void save(Long tgchatId, boolean enableTagInUpdates) {
-
-    }
+    public void save(Long tgchatId, boolean enableTagInUpdates) {}
 
     @Override
     public User getUserByTgChatId(Long tgChatId) {

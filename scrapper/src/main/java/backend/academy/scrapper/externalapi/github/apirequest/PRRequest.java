@@ -1,16 +1,11 @@
 package backend.academy.scrapper.externalapi.github.apirequest;
 
-import backend.academy.scrapper.ScrapperConfig;
-import backend.academy.scrapper.common.ErrorApplier;
 import backend.academy.scrapper.externalapi.ExternalApiResponse;
 import backend.academy.scrapper.externalapi.github.GithubClient;
 import backend.academy.scrapper.externalapi.github.GithubService;
 import backend.academy.scrapper.externalapi.github.models.GithubResponse;
 import backend.academy.scrapper.repository.entity.Link;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClient;
 
 @Component
 public class PRRequest implements GithubApiRequest {
@@ -26,7 +21,7 @@ public class PRRequest implements GithubApiRequest {
     public ExternalApiResponse checkUpdate(Link link) {
         String requestLink = createRequestLink(link) + "/pulls";
         GithubResponse[] response = githubClient.checkLinkUpdate(requestLink);
-       return githubService.apiResponse(response);
+        return githubService.apiResponse(response);
     }
 
     @Override
@@ -36,7 +31,7 @@ public class PRRequest implements GithubApiRequest {
             Pull Request: %s
             Пользователь: %s
             Превью описания: %s
-            """.formatted(link.getUrl(), response.getMainInfo(), response.getUserName(), response.getPreview());
+            """
+                .formatted(link.getUrl(), response.getMainInfo(), response.getUserName(), response.getPreview());
     }
-
 }

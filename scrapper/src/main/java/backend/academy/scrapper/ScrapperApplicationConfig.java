@@ -18,7 +18,6 @@ public class ScrapperApplicationConfig {
     private final String botUrl;
     private final String accessType;
 
-
     public ScrapperApplicationConfig(ScrapperConfig scrapperConfig) {
         this.githubUrl = scrapperConfig.githubUrl();
         this.stackoverflowUrl = scrapperConfig.stackoverflowUrl();
@@ -43,9 +42,8 @@ public class ScrapperApplicationConfig {
 
     @Bean
     @Primary
-    public LinkRepository linkRepository(JdbcTemplate jdbcTemplate,
-                                         JpaLinksRepository jpaLinkRepository,
-                                         JpaUserRepository jpaUserRepository){
+    public LinkRepository linkRepository(
+            JdbcTemplate jdbcTemplate, JpaLinksRepository jpaLinkRepository, JpaUserRepository jpaUserRepository) {
         if ("ORM".equalsIgnoreCase(accessType)) {
             return new OrmLinkRepository(jpaLinkRepository, jpaUserRepository);
         } else {

@@ -2,17 +2,14 @@ package backend.academy.scrapper.scheduler;
 
 import backend.academy.scrapper.botclient.model.LinkUpdate;
 import backend.academy.scrapper.externalapi.ExternalApiRequest;
-import backend.academy.scrapper.externalapi.ExternalApiResponse;
 import backend.academy.scrapper.repository.LinkRepository;
 import backend.academy.scrapper.repository.entity.Link;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -61,5 +58,4 @@ public class SchedulerService {
 
         return updates;
     }
-
 }

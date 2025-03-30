@@ -31,6 +31,7 @@ public class IssueRequest implements GithubApiRequest {
             Issue: %s
             Пользователь: %s
             Превью описания: %s
-            """.formatted(link.getUrl(), response.getMainInfo(), response.getUserName(), response.getPreview());
+            """
+                .formatted(link.getUrl(), response.getMainInfo(), response.getUserName(), response.getPreview());
     }
 }

@@ -3,13 +3,11 @@ package backend.academy.scrapper.scheduler;
 import backend.academy.scrapper.botclient.BotClient;
 import backend.academy.scrapper.botclient.model.LinkUpdate;
 import backend.academy.scrapper.common.exception.ScrapperException;
+import backend.academy.scrapper.repository.LinkRepository;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import backend.academy.scrapper.externalapi.github.apirequest.PRRequest;
-import backend.academy.scrapper.repository.LinkRepository;
-import backend.academy.scrapper.repository.entity.Link;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -36,7 +34,8 @@ public class LinksScheduler {
 
         if (updates != null) {
             for (var update : updates) {
-                boolean tagEnabled = repository.getUserByTgChatId(update.getTgChatId()).getEnableTagInUpdates();
+                boolean tagEnabled =
+                        repository.getUserByTgChatId(update.getTgChatId()).getEnableTagInUpdates();
                 if (update.getTag() == null || !tagEnabled) {
                     try {
                         botClient.sendUpdate(update);
@@ -49,7 +48,6 @@ public class LinksScheduler {
             }
             sendUpdatesByTag(updatesByTag);
         }
-
     }
 
     private void getUpdatesByTag(Map<Long, Map<String, List<String>>> updatesByTag, LinkUpdate update) {
@@ -93,7 +91,6 @@ public class LinksScheduler {
                 } catch (ScrapperException e) {
                     log.error("Error message in tag updates: {}", e.getMessage());
                 }
-
             }
         }
     }

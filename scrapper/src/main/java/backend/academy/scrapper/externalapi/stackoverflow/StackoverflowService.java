@@ -16,10 +16,9 @@ public class StackoverflowService {
             apiResponse.setMainInfo(title);
             apiResponse.setUserName(answer.getOwner().getName());
             apiResponse.setCreatedAt(answer.getCreationDateAsZonedDateTime());
-            apiResponse.setPreview(answer.getBody().substring(0, Math.min(answer.getBody().length(), 200)));
+            apiResponse.setPreview(
+                    answer.getBody().substring(0, Math.min(answer.getBody().length(), 200)));
         }
         return apiResponse;
     }
-
-
 }

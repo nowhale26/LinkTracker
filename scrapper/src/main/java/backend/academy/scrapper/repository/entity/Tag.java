@@ -30,5 +30,4 @@ public class Tag {
     @EqualsAndHashCode.Include
     @Column(name = "tag", nullable = false)
     private String tag;
-
 }

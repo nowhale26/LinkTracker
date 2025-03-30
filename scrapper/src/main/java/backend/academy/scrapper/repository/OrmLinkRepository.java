@@ -1,15 +1,14 @@
 package backend.academy.scrapper.repository;
 
+import backend.academy.scrapper.common.exception.ScrapperException;
 import backend.academy.scrapper.repository.entity.Link;
 import backend.academy.scrapper.repository.entity.User;
 import jakarta.transaction.Transactional;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 public class OrmLinkRepository implements LinkRepository {
 
@@ -113,16 +112,20 @@ public class OrmLinkRepository implements LinkRepository {
 
     @Override
     public Long getTgChatIdByLink(Link link) {
-        List<Long> tgChatIds = new ArrayList<>();
         Long userID = link.getUserId();
-        Long tgChatId = jpaUserRepository.findById(userID).get().getTgChatId();
-        return tgChatId;
+        return jpaUserRepository
+                .findById(userID)
+                .map(User::getTgChatId)
+                .orElseThrow(() -> new ScrapperException("Id not found", "500", "DB exception"));
     }
 
     @Override
     public Long getTgChatIdById(Long id) {
-        if(jpaUserRepository.findById(id).isPresent()){
-            return jpaUserRepository.findById(id).get().getTgChatId();
+        if (jpaUserRepository.findById(id).isPresent()) {
+            return jpaUserRepository
+                    .findById(id)
+                    .map(User::getTgChatId)
+                    .orElseThrow(() -> new ScrapperException("Id not found", "500", "DB exception"));
         }
         return null;
     }
@@ -130,7 +133,7 @@ public class OrmLinkRepository implements LinkRepository {
     @Override
     public void save(Long tgChatId, boolean enableTagInUpdates) {
         User existingUser = jpaUserRepository.findByTgChatId(tgChatId);
-        if (existingUser!=null) {
+        if (existingUser != null) {
             existingUser.setEnableTagInUpdates(enableTagInUpdates);
             jpaUserRepository.save(existingUser);
         } else {

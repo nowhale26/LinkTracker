@@ -9,7 +9,6 @@ import backend.academy.scrapper.links.LinksService;
 import backend.academy.scrapper.links.model.AddLinkRequest;
 import backend.academy.scrapper.repository.Repository;
 import java.util.List;
-import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -36,8 +35,8 @@ public class SchedulerServiceTest extends BaseTest {
         linksService.addLink(1L, body);
 
         List<LinkUpdate> updates = schedulerService.findUpdatedLinks();
-        for(var update: updates){
-            if(update.getTgChatId()==1L){
+        for (var update : updates) {
+            if (update.getTgChatId() == 1L) {
                 assertThat(update.getUrl()).isEqualTo("https://github.com/nowhale26/abc");
             }
         }

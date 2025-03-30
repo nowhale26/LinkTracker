@@ -6,10 +6,10 @@ import backend.academy.scrapper.externalapi.ExternalApiResponse;
 import backend.academy.scrapper.repository.LinkRepository;
 import backend.academy.scrapper.repository.entity.Link;
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
+import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class LinkUpdateChecker implements Runnable {
@@ -22,28 +22,26 @@ public class LinkUpdateChecker implements Runnable {
     @Transactional
     @Override
     public void run() {
-        boolean updated= false;
+        boolean updated = false;
         for (var externalApi : externalApiMap.get(link.getSiteName())) {
             ExternalApiResponse response = externalApi.checkUpdate(link);
-            if (response != null) {
-                if(response.getCreatedAt().isAfter(link.getLastUpdated())) {
-                    LinkUpdate update = new LinkUpdate();
-                    update.setId(link.getId());
-                    update.setUrl(link.getUrl());
-                    update.setDescription(externalApi.formMessage(response, link));
-                    update.setTgChatId(repository.getTgChatIdByLink(link));
-                    if(!link.getTags().isEmpty()){
-                        update.setTag(link.getTags().iterator().next().getTag());
-                    }
-                    updates.add(update);
-                    updated = true;
+            if (response != null && response.getCreatedAt().isAfter(link.getLastUpdated())) {
+                LinkUpdate update = new LinkUpdate();
+                update.setId(link.getId());
+                update.setUrl(link.getUrl());
+                update.setDescription(externalApi.formMessage(response, link));
+                update.setTgChatId(repository.getTgChatIdByLink(link));
+                if (!link.getTags().isEmpty()) {
+                    update.setTag(link.getTags().iterator().next().getTag());
                 }
+                updates.add(update);
+                updated = true;
             }
         }
-        if(updated) {
+        if (updated) {
             link.setLastUpdated(ZonedDateTime.now());
             Long tgChatId = repository.getTgChatIdById(link.getUserId());
-            repository.save(tgChatId,link);
+            repository.save(tgChatId, link);
         }
     }
 }

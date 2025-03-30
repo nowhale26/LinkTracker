@@ -1,10 +1,8 @@
 package backend.academy.scrapper.externalapi.github;
 
 import backend.academy.scrapper.common.exception.ScrapperException;
-import backend.academy.scrapper.externalapi.ExternalApiResponse;
 import backend.academy.scrapper.externalapi.github.models.GithubResponse;
 import backend.academy.scrapper.externalapi.github.models.GithubUser;
-import backend.academy.scrapper.repository.entity.Link;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +14,6 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class GithubClient {
     private final String siteName = "github";
-
 
     public GithubResponse[] checkLinkUpdate(String requestLink) {
         if ("/nowhale26/abc/issues".equals(requestLink)) {
@@ -47,7 +44,6 @@ public class GithubClient {
             return responses;
         }
     }
-
 
     public String getSiteName() {
         return siteName;

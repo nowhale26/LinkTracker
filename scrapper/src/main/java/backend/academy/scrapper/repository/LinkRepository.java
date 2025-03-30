@@ -2,9 +2,9 @@ package backend.academy.scrapper.repository;
 
 import backend.academy.scrapper.repository.entity.Link;
 import backend.academy.scrapper.repository.entity.User;
-import org.springframework.data.domain.Page;
 import java.util.List;
 import java.util.Set;
+import org.springframework.data.domain.Page;
 
 public interface LinkRepository {
 
@@ -29,5 +29,4 @@ public interface LinkRepository {
     void save(Long tgchatId, boolean enableTagInUpdates);
 
     User getUserByTgChatId(Long tgChatId);
-
 }

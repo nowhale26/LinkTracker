@@ -30,6 +30,4 @@ public class Filter {
     @EqualsAndHashCode.Include
     @Column(name = "filter", nullable = false)
     private String filter;
-
-
 }

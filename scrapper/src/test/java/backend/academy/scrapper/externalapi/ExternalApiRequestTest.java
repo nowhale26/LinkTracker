@@ -7,11 +7,8 @@ import backend.academy.scrapper.botclient.model.LinkUpdate;
 import backend.academy.scrapper.links.LinksService;
 import backend.academy.scrapper.links.model.AddLinkRequest;
 import backend.academy.scrapper.repository.LinkRepository;
-import backend.academy.scrapper.repository.Repository;
-import backend.academy.scrapper.repository.entity.Link;
 import backend.academy.scrapper.scheduler.SchedulerService;
 import java.util.List;
-import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -22,7 +19,8 @@ public class ExternalApiRequestTest extends BaseTest {
     private final LinkRepository repository;
 
     @Autowired
-    public ExternalApiRequestTest(SchedulerService schedulerService, LinksService linksService, LinkRepository repository) {
+    public ExternalApiRequestTest(
+            SchedulerService schedulerService, LinksService linksService, LinkRepository repository) {
         this.schedulerService = schedulerService;
         this.linksService = linksService;
         this.repository = repository;

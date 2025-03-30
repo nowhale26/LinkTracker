@@ -2,23 +2,20 @@ package backend.academy.scrapper.links;
 
 import backend.academy.scrapper.common.exception.BusinessException;
 import backend.academy.scrapper.common.validator.LinkValidator;
-import backend.academy.scrapper.externalapi.github.apirequest.PRRequest;
 import backend.academy.scrapper.links.model.AddLinkRequest;
-import backend.academy.scrapper.links.model.EnableTagRequest;
 import backend.academy.scrapper.links.model.LinkResponse;
 import backend.academy.scrapper.links.model.ListLinksResponse;
 import backend.academy.scrapper.links.model.RemoveLinkRequest;
 import backend.academy.scrapper.repository.LinkRepository;
 import backend.academy.scrapper.repository.entity.Filter;
 import backend.academy.scrapper.repository.entity.Link;
+import backend.academy.scrapper.repository.entity.Tag;
 import java.net.URI;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import backend.academy.scrapper.repository.entity.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -52,7 +49,7 @@ public class LinksService {
             }
         }
         link.setFilters(filters);
-        //link.setLastUpdated(ZonedDateTime.of(2010, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault()));
+        // link.setLastUpdated(ZonedDateTime.of(2010, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault()));
         link.setLastUpdated(ZonedDateTime.now());
         extractSiteName(link);
         validator.validateLink(link);
@@ -71,7 +68,7 @@ public class LinksService {
         Set<Link> links = repository.get(tgChatId);
         if (links == null) {
             throw new BusinessException(
-                "Пользователь с таким id не зарегестрирован", "400", "Некорректный id пользователя");
+                    "Пользователь с таким id не зарегестрирован", "400", "Некорректный id пользователя");
         } else if (links.isEmpty()) {
             throw new BusinessException("У данного пользователя нет ни одной ссылки", "400", "Пустой массив ссылок");
         }

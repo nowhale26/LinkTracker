@@ -16,7 +16,7 @@ import reactor.core.scheduler.Schedulers;
 
 @Service
 @Slf4j
-public class BotClient implements UpdateSender{
+public class BotClient implements UpdateSender {
 
     @Autowired
     private WebClient botWebClient;

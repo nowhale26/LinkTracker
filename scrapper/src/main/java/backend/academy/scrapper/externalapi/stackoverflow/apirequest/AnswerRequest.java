@@ -3,13 +3,12 @@ package backend.academy.scrapper.externalapi.stackoverflow.apirequest;
 import backend.academy.scrapper.externalapi.ExternalApiResponse;
 import backend.academy.scrapper.externalapi.stackoverflow.StackoverflowClient;
 import backend.academy.scrapper.externalapi.stackoverflow.StackoverflowService;
-import backend.academy.scrapper.externalapi.stackoverflow.models.StackoverflowAnswer;
 import backend.academy.scrapper.externalapi.stackoverflow.models.StackoverflowResponse;
 import backend.academy.scrapper.repository.entity.Link;
 import org.springframework.stereotype.Component;
 
 @Component
-public class AnswerRequest implements StackoverflowApiRequest{
+public class AnswerRequest implements StackoverflowApiRequest {
 
     private final StackoverflowClient stackoverflowClient;
     private final StackoverflowService stackoverflowService;
@@ -24,7 +23,7 @@ public class AnswerRequest implements StackoverflowApiRequest{
         String[] info = getQuestionInfo(link);
         String questionId = info[0];
         String title = info[1];
-        StackoverflowResponse response = stackoverflowClient.checkLinkUpdate(questionId,"answers");
+        StackoverflowResponse response = stackoverflowClient.checkLinkUpdate(questionId, "answers");
         return stackoverflowService.apiResponse(response, title);
     }
 
@@ -35,6 +34,7 @@ public class AnswerRequest implements StackoverflowApiRequest{
             Тема вопроса: %s
             Пользователь: %s
             Ответ: %s
-            """.formatted(link.getUrl(), response.getMainInfo(), response.getUserName(), response.getPreview());
+            """
+                .formatted(link.getUrl(), response.getMainInfo(), response.getUserName(), response.getPreview());
     }
 }

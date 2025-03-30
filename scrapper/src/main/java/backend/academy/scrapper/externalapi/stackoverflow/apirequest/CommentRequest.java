@@ -33,6 +33,7 @@ public class CommentRequest implements StackoverflowApiRequest {
             Тема вопроса: %s
             Пользователь: %s
             Комментарий: %s
-            """.formatted(link.getUrl(), response.getMainInfo(), response.getUserName(), response.getPreview());
+            """
+                .formatted(link.getUrl(), response.getMainInfo(), response.getUserName(), response.getPreview());
     }
 }

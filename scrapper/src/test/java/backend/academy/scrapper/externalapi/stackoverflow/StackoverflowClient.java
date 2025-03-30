@@ -1,12 +1,9 @@
 package backend.academy.scrapper.externalapi.stackoverflow;
 
 import backend.academy.scrapper.common.exception.ScrapperException;
-import backend.academy.scrapper.externalapi.ExternalApiResponse;
 import backend.academy.scrapper.externalapi.stackoverflow.models.StackoverflowAnswer;
 import backend.academy.scrapper.externalapi.stackoverflow.models.StackoverflowOwner;
 import backend.academy.scrapper.externalapi.stackoverflow.models.StackoverflowResponse;
-import backend.academy.scrapper.repository.entity.Link;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -16,9 +13,8 @@ import org.springframework.stereotype.Component;
 @Profile("test")
 @Component
 @Slf4j
-public class StackoverflowClient{
+public class StackoverflowClient {
     private final String siteName = "stackoverflow";
-
 
     public StackoverflowResponse checkLinkUpdate(String questionId, String type) {
         if ("1".equals(questionId)) {
@@ -51,7 +47,6 @@ public class StackoverflowClient{
             return response;
         }
     }
-
 
     public String getSiteName() {
         return siteName;

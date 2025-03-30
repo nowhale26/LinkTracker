@@ -14,10 +14,7 @@ package backend.academy.scrapper.botclient.model;
 
 import com.google.gson.annotations.SerializedName;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 /** LinkUpdate */
 public class LinkUpdate {

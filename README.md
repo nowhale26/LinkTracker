@@ -8,6 +8,9 @@
 * app.telegram-bot - Токен телеграм бота. Добавляется в переменные окружения BotApplication
 * app.github-token - Токен github api. Добавляется в переменные окружения ScrapperApplication
 
+Также для работы с БД нужно запустить файл docker-compose postgres.yaml.
+Команда для запуска из терминала модуля scrapper: docker-compose -f postgres.yaml up -d
+
 После этого нужно последовательно запустить BotApplication и ScrapperApplication. Выполнив эти действия,
 приложение должно начать корректо работать.
 

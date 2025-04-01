@@ -32,4 +32,4 @@ services:
       - backend
 networks:
   backend:
-    driver: bridge
+

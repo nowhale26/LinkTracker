@@ -44,10 +44,13 @@ public class ScrapperApplicationConfig {
     @Primary
     public LinkRepository linkRepository(
             JdbcTemplate jdbcTemplate, JpaLinksRepository jpaLinkRepository, JpaUserRepository jpaUserRepository) {
-        if ("ORM".equalsIgnoreCase(accessType)) {
-            return new OrmLinkRepository(jpaLinkRepository, jpaUserRepository);
-        } else {
-            return new SqlLinkRepository(jdbcTemplate);
+        switch (accessType) {
+            case "ORM":
+                return new OrmLinkRepository(jpaLinkRepository, jpaUserRepository);
+            case "SQL":
+                return new SqlLinkRepository(jdbcTemplate);
+            default:
+                return new OrmLinkRepository(jpaLinkRepository, jpaUserRepository);
         }
     }
 }

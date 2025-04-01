@@ -1,6 +1,7 @@
 package backend.academy.scrapper.repository;
 
 import backend.academy.scrapper.repository.entity.Link;
+import java.util.Optional;
 import java.util.Set;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,8 +14,8 @@ public interface JpaLinksRepository extends JpaRepository<Link, Long> {
 
     void deleteByUserIdAndUrl(Long userId, String url);
 
-    Link findByUserIdAndUrl(Long userId, String url);
-    // @Query("SELECT l FROM Link l LEFT JOIN FETCH l.tags LEFT JOIN FETCH l.filters")
+    Optional<Link> findByUserIdAndUrl(Long userId, String url);
+
     Page<Link> findAll(Pageable pageable);
 
     @Query("SELECT l.userId FROM Link l WHERE l.url = :url")

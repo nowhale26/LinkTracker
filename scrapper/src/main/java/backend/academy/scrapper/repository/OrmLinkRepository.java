@@ -21,14 +21,11 @@ public class OrmLinkRepository implements LinkRepository {
     }
 
     private Long getOrCreateUserId(Long tgChatId) {
-        User existingUser = jpaUserRepository.findByTgChatId(tgChatId);
-        if (existingUser != null) {
-            return existingUser.getId();
-        } else {
+        return jpaUserRepository.findByTgChatId(tgChatId).map(User::getId).orElseGet(() -> {
             User newUser = new User();
             newUser.setTgChatId(tgChatId);
             return jpaUserRepository.save(newUser).getId();
-        }
+        });
     }
 
     @Transactional
@@ -37,44 +34,51 @@ public class OrmLinkRepository implements LinkRepository {
         Long userId = getOrCreateUserId(tgChatId);
         link.setUserId(userId);
 
-        Link existingLink = jpaLinksRepository.findByUserIdAndUrl(userId, link.getUrl());
+        Link linkToSave = jpaLinksRepository
+                .findByUserIdAndUrl(userId, link.getUrl())
+                .map(existingLink -> {
+                    existingLink.setLastUpdated(link.getLastUpdated());
 
-        if (existingLink != null) {
-            existingLink.setLastUpdated(link.getLastUpdated());
-            if (link.getFilters() != null) {
-                existingLink.getFilters().clear();
-                link.getFilters().forEach(filter -> {
-                    filter.setLink(existingLink);
-                    existingLink.getFilters().add(filter);
-                });
-            }
-            if (link.getTags() != null) {
-                existingLink.getTags().clear();
-                link.getTags().forEach(tag -> {
-                    tag.setLink(existingLink);
-                    existingLink.getTags().add(tag);
-                });
-            }
+                    if (link.getFilters() != null) {
+                        existingLink.getFilters().clear();
+                        link.getFilters().forEach(filter -> {
+                            filter.setLink(existingLink);
+                            existingLink.getFilters().add(filter);
+                        });
+                    }
 
-            jpaLinksRepository.save(existingLink);
-        } else {
-            if (link.getFilters() != null) {
-                link.getFilters().forEach(filter -> filter.setLink(link));
-            }
-            if (link.getTags() != null) {
-                link.getTags().forEach(tag -> tag.setLink(link));
-            }
-            jpaLinksRepository.save(link);
-        }
+                    if (link.getTags() != null) {
+                        existingLink.getTags().clear();
+                        link.getTags().forEach(tag -> {
+                            tag.setLink(existingLink);
+                            existingLink.getTags().add(tag);
+                        });
+                    }
+
+                    return existingLink;
+                })
+                .orElseGet(() -> {
+                    if (link.getFilters() != null) {
+                        link.getFilters().forEach(filter -> filter.setLink(link));
+                    }
+
+                    if (link.getTags() != null) {
+                        link.getTags().forEach(tag -> tag.setLink(link));
+                    }
+
+                    return link;
+                });
+
+        jpaLinksRepository.save(linkToSave);
     }
 
     @Transactional
     @Override
     public void delete(Long tgChatId, Link link) {
-        Long userId = jpaUserRepository.findByTgChatId(tgChatId).getId();
-        if (userId != null) {
-            jpaLinksRepository.deleteByUserIdAndUrl(userId, link.getUrl());
-        }
+        jpaUserRepository
+                .findByTgChatId(tgChatId)
+                .map(User::getId)
+                .ifPresent(userId -> jpaLinksRepository.deleteByUserIdAndUrl(userId, link.getUrl()));
     }
 
     @Override
@@ -84,16 +88,16 @@ public class OrmLinkRepository implements LinkRepository {
 
     @Override
     public Set<Link> get(Long tgChatId) {
-        Long userId = jpaUserRepository.findByTgChatId(tgChatId).getId();
-        if (userId != null) {
-            return jpaLinksRepository.findByUserId(userId);
-        }
-        return new HashSet<>();
+        return jpaUserRepository
+                .findByTgChatId(tgChatId)
+                .map(User::getId)
+                .map(jpaLinksRepository::findByUserId)
+                .orElseGet(HashSet::new);
     }
 
     @Override
     public void register(Long tgChatId) {
-        if (jpaUserRepository.findByTgChatId(tgChatId) == null) {
+        if (jpaUserRepository.findByTgChatId(tgChatId).isEmpty()) {
             User user = new User();
             user.setTgChatId(tgChatId);
             jpaUserRepository.save(user);
@@ -132,20 +136,25 @@ public class OrmLinkRepository implements LinkRepository {
 
     @Override
     public void save(Long tgChatId, boolean enableTagInUpdates) {
-        User existingUser = jpaUserRepository.findByTgChatId(tgChatId);
-        if (existingUser != null) {
-            existingUser.setEnableTagInUpdates(enableTagInUpdates);
-            jpaUserRepository.save(existingUser);
-        } else {
-            User user = new User();
-            user.setTgChatId(tgChatId);
-            user.setEnableTagInUpdates(enableTagInUpdates);
-            jpaUserRepository.save(user);
-        }
+        User userToSave = jpaUserRepository
+                .findByTgChatId(tgChatId)
+                .map(existingUser -> {
+                    existingUser.setEnableTagInUpdates(enableTagInUpdates);
+                    return existingUser;
+                })
+                .orElseGet(() -> {
+                    User newUser = new User();
+                    newUser.setTgChatId(tgChatId);
+                    newUser.setEnableTagInUpdates(enableTagInUpdates);
+                    return newUser;
+                });
+
+        jpaUserRepository.save(userToSave);
     }
 
     @Override
     public User getUserByTgChatId(Long tgChatId) {
-        return jpaUserRepository.findByTgChatId(tgChatId);
+        var user = jpaUserRepository.findByTgChatId(tgChatId);
+        return user.orElse(null);
     }
 }

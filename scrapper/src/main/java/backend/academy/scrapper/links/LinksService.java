@@ -6,11 +6,14 @@ import backend.academy.scrapper.links.model.AddLinkRequest;
 import backend.academy.scrapper.links.model.LinkResponse;
 import backend.academy.scrapper.links.model.ListLinksResponse;
 import backend.academy.scrapper.links.model.RemoveLinkRequest;
-import backend.academy.scrapper.repository.Link;
-import backend.academy.scrapper.repository.Repository;
+import backend.academy.scrapper.repository.LinkRepository;
+import backend.academy.scrapper.repository.entity.Filter;
+import backend.academy.scrapper.repository.entity.Link;
+import backend.academy.scrapper.repository.entity.Tag;
 import java.net.URI;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,32 +23,49 @@ import org.springframework.stereotype.Service;
 public class LinksService {
 
     @Autowired
-    private Repository repository;
+    private LinkRepository repository;
 
     @Autowired
     private LinkValidator validator;
 
-    public LinkResponse addLink(Long userId, AddLinkRequest body) {
+    public LinkResponse addLink(Long tgChatId, AddLinkRequest body) {
         Link link = new Link();
         link.setUrl(body.getLink());
-        link.setTags(body.getTags());
-        link.setFilters(body.getFilters());
+        Set<Tag> tags = new HashSet<>();
+        if (body.getTags() != null) {
+            for (String stringTag : body.getTags()) {
+                Tag tag = new Tag();
+                tag.setTag(stringTag);
+                tags.add(tag);
+            }
+        }
+        link.setTags(tags);
+        Set<Filter> filters = new HashSet<>();
+        if (body.getFilters() != null) {
+            for (String stringFilter : body.getFilters()) {
+                Filter filter = new Filter();
+                filter.setFilter(stringFilter);
+                filters.add(filter);
+            }
+        }
+        link.setFilters(filters);
+        // link.setLastUpdated(ZonedDateTime.of(2010, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault()));
         link.setLastUpdated(ZonedDateTime.now());
         extractSiteName(link);
         validator.validateLink(link);
-        repository.save(userId, link);
-        return createResponse(userId, link);
+        repository.save(tgChatId, link);
+        return createResponse(tgChatId, link, body.getFilters(), body.getTags());
     }
 
-    public LinkResponse deleteLink(Long userId, RemoveLinkRequest body) {
+    public LinkResponse deleteLink(Long tgChatId, RemoveLinkRequest body) {
         Link link = new Link();
         link.setUrl(body.getLink());
-        repository.delete(userId, link);
-        return createResponse(userId, link);
+        repository.delete(tgChatId, link);
+        return createResponse(tgChatId, link, null, null);
     }
 
-    public ListLinksResponse getLinks(Long userId) {
-        Set<Link> links = repository.get(userId);
+    public ListLinksResponse getLinks(Long tgChatId) {
+        Set<Link> links = repository.get(tgChatId);
         if (links == null) {
             throw new BusinessException(
                     "Пользователь с таким id не зарегестрирован", "400", "Некорректный id пользователя");
@@ -69,11 +89,15 @@ public class LinksService {
         repository.delete(id);
     }
 
-    private LinkResponse createResponse(Long userId, Link link) {
+    public void enableTagInUpdates(Long tgChatId, boolean enableTagInUpdates) {
+        repository.save(tgChatId, enableTagInUpdates);
+    }
+
+    private LinkResponse createResponse(Long userId, Link link, List<String> filters, List<String> tags) {
         LinkResponse linkResponse = new LinkResponse();
         linkResponse.setId(userId);
-        linkResponse.setFilters(link.getFilters());
-        linkResponse.setTags(link.getTags());
+        linkResponse.setFilters(filters);
+        linkResponse.setTags(tags);
         linkResponse.setUrl(link.getUrl());
         return linkResponse;
     }

@@ -11,6 +11,7 @@ public record ScrapperConfig(
         StackOverflowCredentials stackOverflow,
         @NotEmpty String githubUrl,
         @NotEmpty String stackoverflowUrl,
-        @NotEmpty String botUrl) {
+        @NotEmpty String botUrl,
+        @NotEmpty String accessType) {
     public record StackOverflowCredentials(@NotEmpty String key, @NotEmpty String accessToken) {}
 }

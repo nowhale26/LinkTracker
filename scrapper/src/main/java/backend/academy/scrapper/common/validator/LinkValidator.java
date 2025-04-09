@@ -1,7 +1,7 @@
 package backend.academy.scrapper.common.validator;
 
 import backend.academy.scrapper.common.exception.BusinessException;
-import backend.academy.scrapper.repository.Link;
+import backend.academy.scrapper.repository.entity.Link;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,8 +13,8 @@ public class LinkValidator {
     private final Map<String, ExternalApiValidator> validators = new HashMap<>();
 
     public LinkValidator(List<ExternalApiValidator> validatorList) {
-        for (var validtor : validatorList) {
-            validators.put(validtor.getSiteName(), validtor);
+        for (var validator : validatorList) {
+            validators.put(validator.getSiteName(), validator);
         }
     }
 

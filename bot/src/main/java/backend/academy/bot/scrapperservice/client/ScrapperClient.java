@@ -3,6 +3,7 @@ package backend.academy.bot.scrapperservice.client;
 import backend.academy.bot.common.exception.ScrapperClientException;
 import backend.academy.bot.scrapperservice.client.model.AddLinkRequest;
 import backend.academy.bot.scrapperservice.client.model.ApiErrorResponse;
+import backend.academy.bot.scrapperservice.client.model.EnableTagRequest;
 import backend.academy.bot.scrapperservice.client.model.LinkResponse;
 import backend.academy.bot.scrapperservice.client.model.ListLinksResponse;
 import backend.academy.bot.scrapperservice.client.model.RemoveLinkRequest;
@@ -50,6 +51,10 @@ public class ScrapperClient {
 
     public ListLinksResponse getLinks(Long userId) {
         return executeRequest(HttpMethod.GET, "/links", userId, null, ListLinksResponse.class);
+    }
+
+    public void enableTagInUpdates(Long userId, EnableTagRequest enableTagRequest) {
+        executeRequest(HttpMethod.POST, "/tag", userId, enableTagRequest, null);
     }
 
     public LinkResponse addLink(Long userId, AddLinkRequest link) {

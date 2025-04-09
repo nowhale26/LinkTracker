@@ -1,6 +1,6 @@
 package backend.academy.scrapper.common.validator;
 
-import backend.academy.scrapper.repository.Link;
+import backend.academy.scrapper.repository.entity.Link;
 import org.springframework.stereotype.Component;
 
 @Component

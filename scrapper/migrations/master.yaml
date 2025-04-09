@@ -1,0 +1,3 @@
+databaseChangeLog:
+  - include:
+      file: initial-migrations.yaml

@@ -14,8 +14,6 @@ package backend.academy.scrapper.botclient.model;
 
 import com.google.gson.annotations.SerializedName;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 /** LinkUpdate */
@@ -29,8 +27,19 @@ public class LinkUpdate {
     @SerializedName("description")
     private String description = null;
 
-    @SerializedName("tgChatIds")
-    private List<Long> tgChatIds = null;
+    @SerializedName("tgChatId")
+    private Long tgChatId = null;
+
+    @SerializedName("tag")
+    private String tag = null;
+
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
 
     public LinkUpdate id(Long id) {
         this.id = id;
@@ -89,8 +98,8 @@ public class LinkUpdate {
         this.description = description;
     }
 
-    public LinkUpdate tgChatIds(List<Long> tgChatIds) {
-        this.tgChatIds = tgChatIds;
+    public LinkUpdate tgChatIds(Long tgChatId) {
+        this.tgChatId = tgChatId;
         return this;
     }
 
@@ -100,12 +109,12 @@ public class LinkUpdate {
      * @return tgChatIds
      */
     @Schema(description = "")
-    public List<Long> getTgChatIds() {
-        return tgChatIds;
+    public Long getTgChatId() {
+        return tgChatId;
     }
 
-    public void setTgChatIds(List<Long> tgChatIds) {
-        this.tgChatIds = tgChatIds;
+    public void setTgChatId(Long tgChatId) {
+        this.tgChatId = tgChatId;
     }
 
     @Override
@@ -120,12 +129,12 @@ public class LinkUpdate {
         return Objects.equals(this.id, linkUpdate.id)
                 && Objects.equals(this.url, linkUpdate.url)
                 && Objects.equals(this.description, linkUpdate.description)
-                && Objects.equals(this.tgChatIds, linkUpdate.tgChatIds);
+                && Objects.equals(this.tgChatId, linkUpdate.tgChatId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, url, description, tgChatIds);
+        return Objects.hash(id, url, description, tgChatId);
     }
 
     @Override
@@ -136,7 +145,7 @@ public class LinkUpdate {
         sb.append("    id: ").append(toIndentedString(id)).append("\n");
         sb.append("    url: ").append(toIndentedString(url)).append("\n");
         sb.append("    description: ").append(toIndentedString(description)).append("\n");
-        sb.append("    tgChatIds: ").append(toIndentedString(tgChatIds)).append("\n");
+        sb.append("    tgChatIds: ").append(toIndentedString(tgChatId)).append("\n");
         sb.append("}");
         return sb.toString();
     }
@@ -147,14 +156,5 @@ public class LinkUpdate {
             return "null";
         }
         return o.toString().replace("\n", "\n    ");
-    }
-
-    public static LinkUpdate formLinkUpdate(Map.Entry<String, List<Long>> updatedLink) {
-        LinkUpdate linkUpdate = new LinkUpdate();
-        linkUpdate.setUrl(updatedLink.getKey());
-        linkUpdate.setTgChatIds(updatedLink.getValue());
-        linkUpdate.setDescription("Обновление");
-        linkUpdate.setId(1L);
-        return linkUpdate;
     }
 }

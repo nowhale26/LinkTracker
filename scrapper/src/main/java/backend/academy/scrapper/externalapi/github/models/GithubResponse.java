@@ -6,12 +6,18 @@ import lombok.Data;
 
 @Data
 public class GithubResponse {
-    @JsonProperty("name")
-    private String name;
+    @JsonProperty("title")
+    private String title;
 
-    @JsonProperty("updated_at")
-    private ZonedDateTime updatedAt;
+    @JsonProperty("description")
+    private String description;
 
-    @JsonProperty("date")
-    private ZonedDateTime date;
+    @JsonProperty("created_at")
+    private ZonedDateTime createdAt;
+
+    @JsonProperty("user")
+    private GithubUser user;
+
+    @JsonProperty("body")
+    private String comment;
 }

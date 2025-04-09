@@ -16,6 +16,9 @@ public class StackoverflowAnswer {
     @JsonProperty("body")
     private String body;
 
+    @JsonProperty("owner")
+    private StackoverflowOwner owner;
+
     public ZonedDateTime getCreationDateAsZonedDateTime() {
         return ZonedDateTime.ofInstant(Instant.ofEpochSecond(creationDate), java.time.ZoneOffset.UTC);
     }

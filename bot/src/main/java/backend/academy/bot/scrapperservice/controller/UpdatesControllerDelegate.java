@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UpdatesControllerDelegate implements UpdatesApiController {
 
     @Autowired
-    UpdatesService service;
+    private UpdatesService service;
 
     @Override
     public ResponseEntity<Void> updatesPost(LinkUpdate body) {

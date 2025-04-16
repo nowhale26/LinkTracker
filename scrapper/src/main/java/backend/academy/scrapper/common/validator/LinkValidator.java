@@ -21,6 +21,7 @@ public class LinkValidator {
     public void validateLink(Link link) {
         boolean validated = validators.get(link.getSiteName()).validateLink(link);
         if (!validated) {
+
             throw new BusinessException("Некорректная ссылка", "400", "Некорректные параметры запроса");
         }
     }

@@ -7,6 +7,8 @@ app:
   stackoverflow-url: https://api.stackexchange.com/2.3/questions
   bot-url: http://localhost:8080
   access-type: ORM
+  update-topic: update
+  DLQ-topic: DLQ
 
 spring:
   application:
@@ -23,6 +25,14 @@ spring:
     url: jdbc:postgresql://localhost:5433/scrapper
     username: postgres
     password: postgres
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: myGroup
+  data:
+    redis:
+      host: redis
+      port: 6379
 
 server:
   port: 8081

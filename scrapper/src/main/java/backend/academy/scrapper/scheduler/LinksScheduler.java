@@ -1,6 +1,7 @@
 package backend.academy.scrapper.scheduler;
 
 import backend.academy.scrapper.botclient.BotClient;
+import backend.academy.scrapper.botclient.KafkaBotClient;
 import backend.academy.scrapper.botclient.model.LinkUpdate;
 import backend.academy.scrapper.common.exception.ScrapperException;
 import backend.academy.scrapper.repository.LinkRepository;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -26,6 +28,9 @@ public class LinksScheduler {
     @Autowired
     private LinkRepository repository;
 
+    @Autowired
+    private KafkaBotClient kafkaBotClient;
+
     // fixedDelay = 3600000, initialDelay = 3600000 раз в час
     @Scheduled(fixedDelay = 60000, initialDelay = 0000) // fixedDelay = 60000, initialDelay = 60000 раз в минуту
     public void checkAllUpdates() {
@@ -38,7 +43,8 @@ public class LinksScheduler {
                         repository.getUserByTgChatId(update.getTgChatId()).getEnableTagInUpdates();
                 if (update.getTag() == null || !tagEnabled) {
                     try {
-                        botClient.sendUpdate(update);
+                        //botClient.sendUpdate(update);
+                        kafkaBotClient.sendUpdate(update);
                     } catch (ScrapperException e) {
                         log.error("Error message: {}", e.getMessage());
                     }

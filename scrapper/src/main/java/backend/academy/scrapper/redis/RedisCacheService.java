@@ -32,7 +32,7 @@ public class RedisCacheService {
 
 
     public boolean hasCachedLinks(Long tgChatId) {
-        return Boolean.TRUE.equals(redisTemplate.hasKey(generateCacheKey(tgChatId)));
+        return redisTemplate.hasKey(generateCacheKey(tgChatId));
     }
 
 

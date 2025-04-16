@@ -2,6 +2,7 @@ package backend.academy.scrapper.scheduler;
 
 import backend.academy.scrapper.botclient.BotClient;
 import backend.academy.scrapper.botclient.KafkaBotClient;
+import backend.academy.scrapper.botclient.UpdateSender;
 import backend.academy.scrapper.botclient.model.LinkUpdate;
 import backend.academy.scrapper.common.exception.ScrapperException;
 import backend.academy.scrapper.repository.LinkRepository;
@@ -23,13 +24,12 @@ public class LinksScheduler {
     private SchedulerService service;
 
     @Autowired
-    private BotClient botClient;
+    private UpdateSender updateSender;
 
     @Autowired
     private LinkRepository repository;
 
-    @Autowired
-    private KafkaBotClient kafkaBotClient;
+
 
     // fixedDelay = 3600000, initialDelay = 3600000 раз в час
     @Scheduled(fixedDelay = 60000, initialDelay = 0000) // fixedDelay = 60000, initialDelay = 60000 раз в минуту
@@ -43,8 +43,7 @@ public class LinksScheduler {
                         repository.getUserByTgChatId(update.getTgChatId()).getEnableTagInUpdates();
                 if (update.getTag() == null || !tagEnabled) {
                     try {
-                        //botClient.sendUpdate(update);
-                        kafkaBotClient.sendUpdate(update);
+                        updateSender.sendUpdate(update);
                     } catch (ScrapperException e) {
                         log.error("Error message: {}", e.getMessage());
                     }
@@ -93,7 +92,7 @@ public class LinksScheduler {
                 update.setId(0L);
                 update.setDescription(description.toString());
                 try {
-                    botClient.sendUpdate(update);
+                    updateSender.sendUpdate(update);
                 } catch (ScrapperException e) {
                     log.error("Error message in tag updates: {}", e.getMessage());
                 }

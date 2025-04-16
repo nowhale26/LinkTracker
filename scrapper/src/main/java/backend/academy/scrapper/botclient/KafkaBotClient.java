@@ -5,7 +5,6 @@ import backend.academy.scrapper.botclient.model.LinkUpdate;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
-@Service
 public class KafkaBotClient implements UpdateSender{
 
     private final String topic;

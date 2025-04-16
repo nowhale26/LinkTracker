@@ -9,6 +9,7 @@ app:
   access-type: ORM
   update-topic: update
   DLQ-topic: DLQ
+  message-transport: Kafka
 
 spring:
   application:

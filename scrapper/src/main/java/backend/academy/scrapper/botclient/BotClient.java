@@ -14,12 +14,14 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
-@Service
 @Slf4j
 public class BotClient implements UpdateSender {
 
-    @Autowired
-    private WebClient botWebClient;
+    private final WebClient botWebClient;
+
+    public BotClient(WebClient botWebClient) {
+        this.botWebClient = botWebClient;
+    }
 
     public void sendUpdate(LinkUpdate linkUpdate) {
         botWebClient

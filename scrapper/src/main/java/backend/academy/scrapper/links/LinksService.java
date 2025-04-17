@@ -4,6 +4,7 @@ import backend.academy.scrapper.common.exception.BusinessException;
 import backend.academy.scrapper.common.validator.LinkValidator;
 import backend.academy.scrapper.kafka.KafkaDLQService;
 import backend.academy.scrapper.links.model.AddLinkRequest;
+import backend.academy.scrapper.links.model.EnableDigestRequest;
 import backend.academy.scrapper.links.model.LinkResponse;
 import backend.academy.scrapper.links.model.ListLinksResponse;
 import backend.academy.scrapper.links.model.RemoveLinkRequest;
@@ -118,6 +119,10 @@ public class LinksService {
 
     public void enableTagInUpdates(Long tgChatId, boolean enableTagInUpdates) {
         repository.save(tgChatId, enableTagInUpdates);
+    }
+
+    public void enableDigest(Long tgChatId, EnableDigestRequest request){
+        repository.save(tgChatId,request);
     }
 
     private LinkResponse createResponse(Long userId, Link link, List<String> filters, List<String> tags) {

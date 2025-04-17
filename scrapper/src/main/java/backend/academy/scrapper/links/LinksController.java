@@ -1,6 +1,7 @@
 package backend.academy.scrapper.links;
 
 import backend.academy.scrapper.links.model.AddLinkRequest;
+import backend.academy.scrapper.links.model.EnableDigestRequest;
 import backend.academy.scrapper.links.model.EnableTagRequest;
 import backend.academy.scrapper.links.model.LinkResponse;
 import backend.academy.scrapper.links.model.LinksApi;
@@ -39,6 +40,12 @@ public class LinksController implements LinksApi, TgChatApi {
     @Override
     public ResponseEntity<Void> enableTagInUpdates(Long tgChatId, EnableTagRequest body) {
         linksService.enableTagInUpdates(tgChatId, body.getEnableTagInUpdates());
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Void> enableDigest(Long tgChatId, EnableDigestRequest body) {
+        linksService.enableDigest(tgChatId, body);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

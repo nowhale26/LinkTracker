@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+import java.time.LocalTime;
 
 @Getter
 @Setter
@@ -23,4 +24,8 @@ public class User {
 
     @Column(name = "enable_tag_in_updates", nullable = false)
     private boolean enableTagInUpdates;
+
+    @Column(name = "digest_time")
+    private LocalTime digestTime;
+
 }

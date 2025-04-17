@@ -1,5 +1,6 @@
 package backend.academy.scrapper.repository;
 
+import backend.academy.scrapper.links.model.EnableDigestRequest;
 import backend.academy.scrapper.repository.entity.Link;
 import backend.academy.scrapper.repository.entity.User;
 import java.sql.Timestamp;
@@ -190,7 +191,17 @@ public class SqlLinkRepository implements LinkRepository {
     public void save(Long tgchatId, boolean enableTagInUpdates) {}
 
     @Override
+    public void save(Long tgChatId, EnableDigestRequest request) {
+
+    }
+
+    @Override
     public User getUserByTgChatId(Long tgChatId) {
         return null;
+    }
+
+    @Override
+    public Set<User> getByEnabledDigest() {
+        return Set.of();
     }
 }

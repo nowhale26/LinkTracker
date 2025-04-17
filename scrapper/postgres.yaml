@@ -3,7 +3,7 @@ version: '3.8'
 services:
   liquibase-migrations:
     container_name: migrations
-    image: liquibase/liquibase:4.29
+    image: liquibase/liquibase:latest
     depends_on:
       - postgresql
     command:

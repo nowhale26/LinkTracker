@@ -191,9 +191,7 @@ public class SqlLinkRepository implements LinkRepository {
     public void save(Long tgchatId, boolean enableTagInUpdates) {}
 
     @Override
-    public void save(Long tgChatId, EnableDigestRequest request) {
-
-    }
+    public void save(Long tgChatId, EnableDigestRequest request) {}
 
     @Override
     public User getUserByTgChatId(Long tgChatId) {

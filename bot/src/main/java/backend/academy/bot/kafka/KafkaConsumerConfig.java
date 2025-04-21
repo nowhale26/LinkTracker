@@ -1,6 +1,8 @@
 package backend.academy.bot.kafka;
 
 import backend.academy.bot.scrapperservice.controller.model.LinkUpdate;
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,8 +14,6 @@ import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.listener.ConcurrentMessageListenerContainer;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
-import java.util.HashMap;
-import java.util.Map;
 
 @Configuration
 public class KafkaConsumerConfig {
@@ -22,10 +22,10 @@ public class KafkaConsumerConfig {
     private String bootStrapServers;
 
     @Bean
-    public ConsumerFactory<String, LinkUpdate> consumerFactory(){
+    public ConsumerFactory<String, LinkUpdate> consumerFactory() {
         Map<String, Object> props = new HashMap<>();
 
-        JsonDeserializer<LinkUpdate> deserializer= new JsonDeserializer<>(LinkUpdate.class);
+        JsonDeserializer<LinkUpdate> deserializer = new JsonDeserializer<>(LinkUpdate.class);
         deserializer.setRemoveTypeHeaders(false);
         deserializer.addTrustedPackages("*");
         deserializer.setUseTypeMapperForKey(true);
@@ -38,8 +38,10 @@ public class KafkaConsumerConfig {
     }
 
     @Bean
-    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, LinkUpdate>> kafkaListenerContainerFactory(){
-        ConcurrentKafkaListenerContainerFactory<String, LinkUpdate> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, LinkUpdate>>
+            kafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, LinkUpdate> factory =
+                new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
         return factory;
     }

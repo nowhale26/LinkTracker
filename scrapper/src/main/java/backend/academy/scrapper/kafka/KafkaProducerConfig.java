@@ -2,6 +2,8 @@ package backend.academy.scrapper.kafka;
 
 import backend.academy.scrapper.botclient.model.LinkUpdate;
 import backend.academy.scrapper.links.model.AddLinkRequest;
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,8 +13,6 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.support.serializer.JsonSerializer;
-import java.util.HashMap;
-import java.util.Map;
 
 @Configuration
 public class KafkaProducerConfig {
@@ -21,7 +21,7 @@ public class KafkaProducerConfig {
     private String bootStrapServers;
 
     @Bean
-    public Map<String, Object> producerConfigs(){
+    public Map<String, Object> producerConfigs() {
         Map<String, Object> props = new HashMap<>();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootStrapServers);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
@@ -30,24 +30,22 @@ public class KafkaProducerConfig {
     }
 
     @Bean
-    public ProducerFactory<String, LinkUpdate> producerLinkUpdateFactory(){
+    public ProducerFactory<String, LinkUpdate> producerLinkUpdateFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfigs());
     }
 
     @Bean
-    public KafkaTemplate<String, LinkUpdate> kafkaLinkUpdateTemplate(){
+    public KafkaTemplate<String, LinkUpdate> kafkaLinkUpdateTemplate() {
         return new KafkaTemplate<>(producerLinkUpdateFactory());
     }
 
     @Bean
-    public ProducerFactory<String, AddLinkRequest> producerDLQFactory(){
+    public ProducerFactory<String, AddLinkRequest> producerDLQFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfigs());
     }
 
     @Bean
-    public KafkaTemplate<String, AddLinkRequest> kafkaDLQTemplate(){
+    public KafkaTemplate<String, AddLinkRequest> kafkaDLQTemplate() {
         return new KafkaTemplate<>(producerDLQFactory());
     }
-
-
 }

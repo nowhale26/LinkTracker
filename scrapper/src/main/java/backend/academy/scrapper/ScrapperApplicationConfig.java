@@ -9,7 +9,6 @@ import backend.academy.scrapper.repository.JpaUserRepository;
 import backend.academy.scrapper.repository.LinkRepository;
 import backend.academy.scrapper.repository.OrmLinkRepository;
 import backend.academy.scrapper.repository.SqlLinkRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -64,8 +63,9 @@ public class ScrapperApplicationConfig {
 
     @Bean
     @Primary
-    public UpdateSender updateSender(ScrapperConfig config, KafkaTemplate<String, LinkUpdate> kafkaLinkUpdateTemplate, WebClient botWebClient){
-        switch (messageTransport){
+    public UpdateSender updateSender(
+            ScrapperConfig config, KafkaTemplate<String, LinkUpdate> kafkaLinkUpdateTemplate, WebClient botWebClient) {
+        switch (messageTransport) {
             case "Kafka":
                 return new KafkaBotClient(config, kafkaLinkUpdateTemplate);
             case "HTTP":

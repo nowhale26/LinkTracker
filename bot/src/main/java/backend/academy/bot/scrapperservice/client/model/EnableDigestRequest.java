@@ -1,7 +1,7 @@
 package backend.academy.bot.scrapperservice.client.model;
 
-import lombok.Data;
 import java.time.LocalTime;
+import lombok.Data;
 
 @Data
 public class EnableDigestRequest {

@@ -100,13 +100,13 @@ public class SchedulerService {
                     update.setTag(link.getTags().iterator().next().getTag());
                 }
                 boolean filteredUser = true;
-                for (var filter : link.getFilters()){
-                    if(response.getUserName().equals(filter.getFilter())){
-                        filteredUser=false;
+                for (var filter : link.getFilters()) {
+                    if (response.getUserName().equals(filter.getFilter())) {
+                        filteredUser = false;
                         break;
                     }
                 }
-                if(filteredUser){
+                if (filteredUser) {
                     updates.add(update);
                 }
                 updated = true;

@@ -157,23 +157,23 @@ public class OrmLinkRepository implements LinkRepository {
     @Override
     public void save(Long tgChatId, EnableDigestRequest request) {
         LocalTime digestTime;
-        if(request.getEnableDigest()){
+        if (request.getEnableDigest()) {
             digestTime = request.getDigestTime();
         } else {
             digestTime = null;
         }
         User userToSave = jpaUserRepository
-            .findByTgChatId(tgChatId)
-            .map(existingUser -> {
-                existingUser.setDigestTime(digestTime);
-                return existingUser;
-            })
-            .orElseGet(() -> {
-                User newUser = new User();
-                newUser.setTgChatId(tgChatId);
-                newUser.setDigestTime(digestTime);
-                return newUser;
-            });
+                .findByTgChatId(tgChatId)
+                .map(existingUser -> {
+                    existingUser.setDigestTime(digestTime);
+                    return existingUser;
+                })
+                .orElseGet(() -> {
+                    User newUser = new User();
+                    newUser.setTgChatId(tgChatId);
+                    newUser.setDigestTime(digestTime);
+                    return newUser;
+                });
 
         jpaUserRepository.save(userToSave);
     }
@@ -188,8 +188,8 @@ public class OrmLinkRepository implements LinkRepository {
     public Set<User> getByEnabledDigest() {
         List<User> users = jpaUserRepository.findAll();
         Set<User> usersWithEnabledDigest = new HashSet<>();
-        for(var user : users){
-            if(user.getDigestTime()!=null){
+        for (var user : users) {
+            if (user.getDigestTime() != null) {
                 usersWithEnabledDigest.add(user);
             }
         }

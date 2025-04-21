@@ -1,5 +1,7 @@
 package backend.academy.scrapper.kafka;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import backend.academy.scrapper.BaseTest;
 import backend.academy.scrapper.ScrapperConfig;
 import backend.academy.scrapper.botclient.KafkaBotClient;
@@ -23,15 +25,13 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.kafka.KafkaContainer;
-import static org.assertj.core.api.Assertions.assertThat;
-
 
 @Testcontainers
 public class KafkaTest extends BaseTest {
 
     @Container
-    private static final KafkaContainer kafkaContainer = new KafkaContainer("apache/kafka-native:3.8.1")
-        .withExposedPorts(9092);
+    private static final KafkaContainer kafkaContainer =
+            new KafkaContainer("apache/kafka-native:3.8.1").withExposedPorts(9092);
 
     @Autowired
     private KafkaTemplate<String, LinkUpdate> kafkaLinkUpdateTemplate;
@@ -68,13 +68,12 @@ public class KafkaTest extends BaseTest {
         assertThat(messageReceived).isTrue();
 
         LinkUpdate sentUpdate = listner.getUpdate();
-        assertThat(sentUpdate.getDescription())
-            .isEqualTo("test");
+        assertThat(sentUpdate.getDescription()).isEqualTo("test");
         assertThat(sentUpdate.getTgChatId()).isEqualTo(1L);
     }
 
     @Test
-    public void DLQTest(){
+    public void DLQTest() {
         AddLinkRequest dlqRequest = new AddLinkRequest();
         dlqRequest.setLink("http://example.com");
         dlqService.sendToDLQ(dlqRequest);

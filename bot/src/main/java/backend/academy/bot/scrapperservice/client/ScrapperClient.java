@@ -58,8 +58,8 @@ public class ScrapperClient {
         executeRequest(HttpMethod.POST, "/tag", userId, enableTagRequest, null);
     }
 
-    public void enableDigest(Long userId, EnableDigestRequest enableDigestRequest){
-        executeRequest(HttpMethod.POST,"/digest", userId, enableDigestRequest,null);
+    public void enableDigest(Long userId, EnableDigestRequest enableDigestRequest) {
+        executeRequest(HttpMethod.POST, "/digest", userId, enableDigestRequest, null);
     }
 
     public LinkResponse addLink(Long userId, AddLinkRequest link) {

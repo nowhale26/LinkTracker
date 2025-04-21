@@ -1,10 +1,10 @@
 package backend.academy.scrapper.redis;
 
 import backend.academy.scrapper.links.model.ListLinksResponse;
+import java.util.concurrent.TimeUnit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
-import java.util.concurrent.TimeUnit;
 
 @Service
 public class RedisCacheService {
@@ -20,21 +20,17 @@ public class RedisCacheService {
         return "user_links:" + tgChatId;
     }
 
-
     public void cacheUserLinks(Long tgChatId, ListLinksResponse links) {
         redisTemplate.opsForValue().set(generateCacheKey(tgChatId), links, CACHE_TTL, TimeUnit.SECONDS);
     }
-
 
     public ListLinksResponse getUserLinksFromCache(Long tgChatId) {
         return (ListLinksResponse) redisTemplate.opsForValue().get(generateCacheKey(tgChatId));
     }
 
-
     public boolean hasCachedLinks(Long tgChatId) {
         return redisTemplate.hasKey(generateCacheKey(tgChatId));
     }
-
 
     public void invalidateCache(Long tgChatId) {
         redisTemplate.delete(generateCacheKey(tgChatId));

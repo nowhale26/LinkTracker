@@ -63,9 +63,9 @@ public class LinksService {
         }
         link.setFilters(filters);
         link.setLastUpdated(ZonedDateTime.of(2010, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault()));
-        //link.setLastUpdated(ZonedDateTime.now());
+        // link.setLastUpdated(ZonedDateTime.now());
         extractSiteName(link);
-        try{
+        try {
             validator.validateLink(link);
         } catch (BusinessException e) {
             kafkaDLQService.sendToDLQ(body);
@@ -121,8 +121,8 @@ public class LinksService {
         repository.save(tgChatId, enableTagInUpdates);
     }
 
-    public void enableDigest(Long tgChatId, EnableDigestRequest request){
-        repository.save(tgChatId,request);
+    public void enableDigest(Long tgChatId, EnableDigestRequest request) {
+        repository.save(tgChatId, request);
     }
 
     private LinkResponse createResponse(Long userId, Link link, List<String> filters, List<String> tags) {

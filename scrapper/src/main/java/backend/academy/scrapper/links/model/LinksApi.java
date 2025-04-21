@@ -23,122 +23,125 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public interface LinksApi {
 
     @Operation(
-        summary = "Убрать отслеживание ссылки",
-        description = "",
-        tags = {})
+            summary = "Убрать отслеживание ссылки",
+            description = "",
+            tags = {})
     @ApiResponses(
-        value = {
-            @ApiResponse(
-                responseCode = "200",
-                description = "Ссылка успешно убрана",
-                content =
-                @Content(
-                    mediaType = "application/json",
-                    schema = @Schema(implementation = LinkResponse.class))),
-            @ApiResponse(
-                responseCode = "400",
-                description = "Некорректные параметры запроса",
-                content =
-                @Content(
-                    mediaType = "application/json",
-                    schema = @Schema(implementation = ApiErrorResponse.class))),
-            @ApiResponse(
-                responseCode = "404",
-                description = "Ссылка не найдена",
-                content =
-                @Content(
-                    mediaType = "application/json",
-                    schema = @Schema(implementation = ApiErrorResponse.class)))
-        })
+            value = {
+                @ApiResponse(
+                        responseCode = "200",
+                        description = "Ссылка успешно убрана",
+                        content =
+                                @Content(
+                                        mediaType = "application/json",
+                                        schema = @Schema(implementation = LinkResponse.class))),
+                @ApiResponse(
+                        responseCode = "400",
+                        description = "Некорректные параметры запроса",
+                        content =
+                                @Content(
+                                        mediaType = "application/json",
+                                        schema = @Schema(implementation = ApiErrorResponse.class))),
+                @ApiResponse(
+                        responseCode = "404",
+                        description = "Ссылка не найдена",
+                        content =
+                                @Content(
+                                        mediaType = "application/json",
+                                        schema = @Schema(implementation = ApiErrorResponse.class)))
+            })
     @RequestMapping(
-        value = "/links",
-        produces = {"application/json"},
-        consumes = {"application/json"},
-        method = RequestMethod.DELETE)
+            value = "/links",
+            produces = {"application/json"},
+            consumes = {"application/json"},
+            method = RequestMethod.DELETE)
     ResponseEntity<LinkResponse> linksDelete(
-        @Parameter(in = ParameterIn.HEADER, description = "", required = true, schema = @Schema())
-        @RequestHeader(value = "Tg-Chat-Id", required = true)
-        Long tgChatId,
-        @Parameter(in = ParameterIn.DEFAULT, description = "", required = true, schema = @Schema())
-        @Valid
-        @RequestBody
-        RemoveLinkRequest body);
+            @Parameter(in = ParameterIn.HEADER, description = "", required = true, schema = @Schema())
+                    @RequestHeader(value = "Tg-Chat-Id", required = true)
+                    Long tgChatId,
+            @Parameter(in = ParameterIn.DEFAULT, description = "", required = true, schema = @Schema())
+                    @Valid
+                    @RequestBody
+                    RemoveLinkRequest body);
 
     @Operation(
-        summary = "Получить все отслеживаемые ссылки",
-        description = "",
-        tags = {})
+            summary = "Получить все отслеживаемые ссылки",
+            description = "",
+            tags = {})
     @ApiResponses(
-        value = {
-            @ApiResponse(
-                responseCode = "200",
-                description = "Ссылки успешно получены",
-                content =
-                @Content(
-                    mediaType = "application/json",
-                    schema = @Schema(implementation = ListLinksResponse.class))),
-            @ApiResponse(
-                responseCode = "400",
-                description = "Некорректные параметры запроса",
-                content =
-                @Content(
-                    mediaType = "application/json",
-                    schema = @Schema(implementation = ApiErrorResponse.class)))
-        })
+            value = {
+                @ApiResponse(
+                        responseCode = "200",
+                        description = "Ссылки успешно получены",
+                        content =
+                                @Content(
+                                        mediaType = "application/json",
+                                        schema = @Schema(implementation = ListLinksResponse.class))),
+                @ApiResponse(
+                        responseCode = "400",
+                        description = "Некорректные параметры запроса",
+                        content =
+                                @Content(
+                                        mediaType = "application/json",
+                                        schema = @Schema(implementation = ApiErrorResponse.class)))
+            })
     @RequestMapping(
-        value = "/links",
-        produces = {"application/json"},
-        method = RequestMethod.GET)
+            value = "/links",
+            produces = {"application/json"},
+            method = RequestMethod.GET)
     ResponseEntity<ListLinksResponse> linksGet(
-        @Parameter(in = ParameterIn.HEADER, description = "", required = true, schema = @Schema())
-        @RequestHeader(value = "Tg-Chat-Id", required = true)
-        Long tgChatId);
+            @Parameter(in = ParameterIn.HEADER, description = "", required = true, schema = @Schema())
+                    @RequestHeader(value = "Tg-Chat-Id", required = true)
+                    Long tgChatId);
 
     @Operation(
-        summary = "Добавить отслеживание ссылки",
-        description = "",
-        tags = {})
+            summary = "Добавить отслеживание ссылки",
+            description = "",
+            tags = {})
     @ApiResponses(
-        value = {
-            @ApiResponse(
-                responseCode = "200",
-                description = "Ссылка успешно добавлена",
-                content =
-                @Content(
-                    mediaType = "application/json",
-                    schema = @Schema(implementation = LinkResponse.class))),
-            @ApiResponse(
-                responseCode = "400",
-                description = "Некорректные параметры запроса",
-                content =
-                @Content(
-                    mediaType = "application/json",
-                    schema = @Schema(implementation = ApiErrorResponse.class)))
-        })
+            value = {
+                @ApiResponse(
+                        responseCode = "200",
+                        description = "Ссылка успешно добавлена",
+                        content =
+                                @Content(
+                                        mediaType = "application/json",
+                                        schema = @Schema(implementation = LinkResponse.class))),
+                @ApiResponse(
+                        responseCode = "400",
+                        description = "Некорректные параметры запроса",
+                        content =
+                                @Content(
+                                        mediaType = "application/json",
+                                        schema = @Schema(implementation = ApiErrorResponse.class)))
+            })
     @RequestMapping(
-        value = "/links",
-        produces = {"application/json"},
-        consumes = {"application/json"},
-        method = RequestMethod.POST)
+            value = "/links",
+            produces = {"application/json"},
+            consumes = {"application/json"},
+            method = RequestMethod.POST)
     ResponseEntity<LinkResponse> linksPost(
-        @Parameter(in = ParameterIn.HEADER, description = "", required = true, schema = @Schema())
-        @RequestHeader(value = "Tg-Chat-Id", required = true)
-        Long tgChatId,
-        @Parameter(in = ParameterIn.DEFAULT, description = "", required = true, schema = @Schema())
-        @Valid
-        @RequestBody
-        AddLinkRequest body);
+            @Parameter(in = ParameterIn.HEADER, description = "", required = true, schema = @Schema())
+                    @RequestHeader(value = "Tg-Chat-Id", required = true)
+                    Long tgChatId,
+            @Parameter(in = ParameterIn.DEFAULT, description = "", required = true, schema = @Schema())
+                    @Valid
+                    @RequestBody
+                    AddLinkRequest body);
 
     @RequestMapping(
-        value = "/tag",
-        produces = {"application/json"},
-        consumes = {"application/json"},
-        method = RequestMethod.POST)
+            value = "/tag",
+            produces = {"application/json"},
+            consumes = {"application/json"},
+            method = RequestMethod.POST)
     ResponseEntity<Void> enableTagInUpdates(
-        @RequestHeader(value = "Tg-Chat-Id") Long tgChatId, @RequestBody EnableTagRequest body);
+            @RequestHeader(value = "Tg-Chat-Id") Long tgChatId, @RequestBody EnableTagRequest body);
 
-    @RequestMapping(value = "/digest", produces = {"application/json"},
-        consumes = {"application/json"},
-        method = RequestMethod.POST)
-    ResponseEntity<Void> enableDigest(@RequestHeader(value = "Tg-Chat-Id") Long tgChatId, @RequestBody EnableDigestRequest body);
+    @RequestMapping(
+            value = "/digest",
+            produces = {"application/json"},
+            consumes = {"application/json"},
+            method = RequestMethod.POST)
+    ResponseEntity<Void> enableDigest(
+            @RequestHeader(value = "Tg-Chat-Id") Long tgChatId, @RequestBody EnableDigestRequest body);
 }

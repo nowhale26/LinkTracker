@@ -4,6 +4,8 @@ import backend.academy.scrapper.botclient.UpdateSender;
 import backend.academy.scrapper.botclient.model.LinkUpdate;
 import backend.academy.scrapper.common.exception.ScrapperException;
 import backend.academy.scrapper.repository.LinkRepository;
+import backend.academy.scrapper.repository.entity.User;
+import jakarta.annotation.PostConstruct;
 import java.time.LocalTime;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -15,8 +17,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
 import java.util.stream.Collectors;
-import backend.academy.scrapper.repository.entity.User;
-import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -45,7 +45,6 @@ public class LinksScheduler {
 
     private static final String REDIS_DELAYED_UPDATES_KEY = "delayed_updates:";
 
-
     public LinksScheduler(TaskScheduler taskScheduler, RedisTemplate<String, Object> redisTemplate) {
         this.taskScheduler = taskScheduler;
         this.redisTemplate = redisTemplate;
@@ -60,10 +59,7 @@ public class LinksScheduler {
     @Scheduled(fixedDelay = 3600000) // Проверка раз в час
     public void checkForUserSettingsChanges() {
         Set<User> digestUsers = repository.getByEnabledDigest();
-        Set<Long> currentUserIds = digestUsers.stream()
-            .map(User::getTgChatId)
-            .collect(Collectors.toSet());
-
+        Set<Long> currentUserIds = digestUsers.stream().map(User::getTgChatId).collect(Collectors.toSet());
 
         Set<Long> scheduledUsers = new HashSet<>(userScheduledTasks.keySet());
         for (Long userId : scheduledUsers) {
@@ -91,13 +87,11 @@ public class LinksScheduler {
                 nextRun = nextRun.plusDays(1);
             }
 
-            ScheduledFuture<?> future = taskScheduler.schedule(
-                () -> processDailyDigest(user), nextRun.toInstant());
+            ScheduledFuture<?> future = taskScheduler.schedule(() -> processDailyDigest(user), nextRun.toInstant());
 
             userScheduledTasks.put(chatId, future);
         } catch (Exception e) {
-            log.error("Failed to schedule digest for user {}: {}",
-                user.getTgChatId(), e.getMessage(), e);
+            log.error("Failed to schedule digest for user {}: {}", user.getTgChatId(), e.getMessage(), e);
         }
     }
 
@@ -133,7 +127,7 @@ public class LinksScheduler {
             for (var update : updates) {
                 if (!userScheduledTasks.containsKey(update.getTgChatId())) {
                     updatesWithoutDigest.add(update);
-                } else{
+                } else {
                     String key = REDIS_DELAYED_UPDATES_KEY + update.getTgChatId();
                     redisTemplate.opsForList().rightPush(key, update);
                 }
@@ -191,7 +185,7 @@ public class LinksScheduler {
         Map<Long, Map<String, List<String>>> updatesByTag = new HashMap<>();
         for (var update : updates) {
             boolean tagEnabled =
-                repository.getUserByTgChatId(update.getTgChatId()).getEnableTagInUpdates();
+                    repository.getUserByTgChatId(update.getTgChatId()).getEnableTagInUpdates();
             if (update.getTag() == null || !tagEnabled) {
                 try {
                     updateSender.sendUpdate(update);

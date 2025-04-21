@@ -3,6 +3,8 @@ package backend.academy.scrapper.kafka;
 import backend.academy.scrapper.ScrapperConfig;
 import backend.academy.scrapper.botclient.model.LinkUpdate;
 import backend.academy.scrapper.links.model.AddLinkRequest;
+import backend.academy.scrapper.redis.RedisCacheService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
@@ -18,6 +20,6 @@ public class KafkaDLQService {
     }
 
     public void sendToDLQ(AddLinkRequest request){
-
+        kafkaDLQTemplate.send(topic, request);
     }
 }

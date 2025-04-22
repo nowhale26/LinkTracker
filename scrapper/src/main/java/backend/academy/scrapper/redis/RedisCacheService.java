@@ -1,5 +1,6 @@
 package backend.academy.scrapper.redis;
 
+import backend.academy.scrapper.ScrapperConfig;
 import backend.academy.scrapper.links.model.ListLinksResponse;
 import java.util.concurrent.TimeUnit;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,11 +10,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class RedisCacheService {
     private final RedisTemplate<String, Object> redisTemplate;
-    private static final long CACHE_TTL = 3600; // Время жизни кеша в секундах (1 час)
+    private final long CACHE_TTL; // Время жизни кеша в секундах
 
     @Autowired
-    public RedisCacheService(RedisTemplate<String, Object> redisTemplate) {
+    public RedisCacheService(RedisTemplate<String, Object> redisTemplate, ScrapperConfig config) {
         this.redisTemplate = redisTemplate;
+        CACHE_TTL = Long.parseLong(config.cacheTtl());
     }
 
     public String generateCacheKey(Long tgChatId) {

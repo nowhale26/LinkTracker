@@ -14,7 +14,6 @@ import backend.academy.scrapper.repository.entity.Filter;
 import backend.academy.scrapper.repository.entity.Link;
 import backend.academy.scrapper.repository.entity.Tag;
 import java.net.URI;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -62,8 +61,7 @@ public class LinksService {
             }
         }
         link.setFilters(filters);
-        link.setLastUpdated(ZonedDateTime.of(2010, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault()));
-        // link.setLastUpdated(ZonedDateTime.now());
+        link.setLastUpdated(ZonedDateTime.now());
         extractSiteName(link);
         try {
             validator.validateLink(link);

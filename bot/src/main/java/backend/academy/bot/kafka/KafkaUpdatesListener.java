@@ -14,7 +14,7 @@ public class KafkaUpdatesListener {
         this.service = service;
     }
 
-    @KafkaListener(topics = "${app.update-topic}", groupId = "${spring.kafka.consumer.group-id}")
+    @KafkaListener(topics = "${app.kafka.consumer.topic}", groupId = "${app.kafka.consumer.group-id}")
     public void listener(LinkUpdate update) {
         service.sendUpdate(update);
     }

@@ -156,12 +156,7 @@ public class OrmLinkRepository implements LinkRepository {
 
     @Override
     public void save(Long tgChatId, EnableDigestRequest request) {
-        LocalTime digestTime;
-        if (request.getEnableDigest()) {
-            digestTime = request.getDigestTime();
-        } else {
-            digestTime = null;
-        }
+        LocalTime digestTime = request.getEnableDigest() ? request.getDigestTime() : null;
         User userToSave = jpaUserRepository
                 .findByTgChatId(tgChatId)
                 .map(existingUser -> {

@@ -1,16 +1,17 @@
 package backend.academy.bot.scrapperservice.controller;
 
 import backend.academy.bot.scrapperservice.controller.model.LinkUpdate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class UpdatesControllerDelegate implements UpdatesApiController {
+    private final UpdatesService service;
 
-    @Autowired
-    private UpdatesService service;
+    public UpdatesControllerDelegate(UpdatesService service) {
+        this.service = service;
+    }
 
     @Override
     public ResponseEntity<Void> updatesPost(LinkUpdate body) {

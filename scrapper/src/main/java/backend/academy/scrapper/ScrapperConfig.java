@@ -15,6 +15,7 @@ public record ScrapperConfig(
         @NotEmpty String accessType,
         @NotEmpty String updateTopic,
         @NotEmpty String DLQTopic,
-        @NotEmpty String messageTransport) {
+        @NotEmpty String messageTransport,
+        @NotEmpty String cacheTtl) {
     public record StackOverflowCredentials(@NotEmpty String key, @NotEmpty String accessToken) {}
 }

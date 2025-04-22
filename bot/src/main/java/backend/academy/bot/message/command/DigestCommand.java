@@ -4,7 +4,6 @@ import backend.academy.bot.common.exception.ScrapperClientException;
 import backend.academy.bot.scrapperservice.client.model.EnableDigestRequest;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Update;
-import com.pengrad.telegrambot.request.SendMessage;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -25,14 +24,14 @@ public class DigestCommand extends Command {
         String[] updateMessage = update.message().text().split("\\s+");
         if (updateMessage.length == 2) {
             EnableDigestRequest request = new EnableDigestRequest();
+            String message;
             if (updateMessage[1].equals("0")) {
                 request.setEnableDigest(false);
                 try {
                     client.enableDigest(chatId, request);
-                    bot.execute(new SendMessage(chatId, "Дайджест успешно выключен"));
+                    message = "Дайджест успешно выключен";
                 } catch (ScrapperClientException e) {
-                    String message = e.getMessage();
-                    bot.execute(new SendMessage(chatId, message));
+                    message = e.getMessage();
                 }
             } else {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
@@ -43,15 +42,15 @@ public class DigestCommand extends Command {
                     request.setDigestTime(time);
                     try {
                         client.enableDigest(chatId, request);
-                        bot.execute(new SendMessage(chatId, "Дайджест успешно включен на время " + time));
+                        message = "Дайджест успешно включен на время " + time;
                     } catch (ScrapperClientException e) {
-                        String message = e.getMessage();
-                        bot.execute(new SendMessage(chatId, message));
+                        message = e.getMessage();
                     }
                 } catch (DateTimeParseException e) {
-                    bot.execute(new SendMessage(chatId, BAD_MESSAGE));
+                    message = BAD_MESSAGE;
                 }
             }
+            sendMessageToBot(chatId, message, bot);
         }
     }
 }

@@ -1,6 +1,13 @@
 app:
   telegram-token: test-token
   scrapper-url: http://localhost:8081
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: myGroup
+      topic: update
+
+
 
 spring:
   application:
@@ -13,7 +20,6 @@ spring:
     open-in-view: false
   main:
     allow-bean-definition-overriding: true
-
 server:
   port: 8080
 

@@ -8,6 +8,14 @@ spring:
     hibernate:
       ddl-auto: create-drop
     show-sql: true
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: myGroup
+  data:
+    redis:
+      host: localhost
+      port: 6379
 
 app:
   github-token: test-token
@@ -18,3 +26,7 @@ app:
   stackoverflow-url: https://api.stackexchange.com/2.3/questions
   bot-url: http://localhost:8080
   access-type: ORM
+  update-topic: update
+  DLQ-topic: DLQ
+  message-transport: Kafka
+  cache-ttl: 3600

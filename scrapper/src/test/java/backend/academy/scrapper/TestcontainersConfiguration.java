@@ -24,10 +24,10 @@ class TestcontainersConfiguration {
     //                .withPassword("test");
     //    }
     //
-    //    @Bean
-    //    @RestartScope
-    //    @ServiceConnection
-    //    KafkaContainer kafkaContainer() {
-    //        return new KafkaContainer("apache/kafka-native:3.8.1").withExposedPorts(9092);
-    //    }
+    //        @Bean
+    //        @RestartScope
+    //        @ServiceConnection
+    //        KafkaContainer kafkaContainer() {
+    //            return new KafkaContainer("apache/kafka-native:3.8.1").withExposedPorts(9092);
+    //        }
 }

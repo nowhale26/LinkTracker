@@ -136,4 +136,12 @@ public interface LinksApi {
             method = RequestMethod.POST)
     ResponseEntity<Void> enableTagInUpdates(
             @RequestHeader(value = "Tg-Chat-Id") Long tgChatId, @RequestBody EnableTagRequest body);
+
+    @RequestMapping(
+            value = "/digest",
+            produces = {"application/json"},
+            consumes = {"application/json"},
+            method = RequestMethod.POST)
+    ResponseEntity<Void> enableDigest(
+            @RequestHeader(value = "Tg-Chat-Id") Long tgChatId, @RequestBody EnableDigestRequest body);
 }

@@ -2,10 +2,13 @@ package backend.academy.scrapper.links;
 
 import backend.academy.scrapper.common.exception.BusinessException;
 import backend.academy.scrapper.common.validator.LinkValidator;
+import backend.academy.scrapper.kafka.KafkaDLQService;
 import backend.academy.scrapper.links.model.AddLinkRequest;
+import backend.academy.scrapper.links.model.EnableDigestRequest;
 import backend.academy.scrapper.links.model.LinkResponse;
 import backend.academy.scrapper.links.model.ListLinksResponse;
 import backend.academy.scrapper.links.model.RemoveLinkRequest;
+import backend.academy.scrapper.redis.RedisCacheService;
 import backend.academy.scrapper.repository.LinkRepository;
 import backend.academy.scrapper.repository.entity.Filter;
 import backend.academy.scrapper.repository.entity.Link;
@@ -28,6 +31,15 @@ public class LinksService {
     @Autowired
     private LinkValidator validator;
 
+    @Autowired
+    private KafkaDLQService kafkaDLQService;
+
+    private final RedisCacheService cacheService;
+
+    public LinksService(RedisCacheService cacheService) {
+        this.cacheService = cacheService;
+    }
+
     public LinkResponse addLink(Long tgChatId, AddLinkRequest body) {
         Link link = new Link();
         link.setUrl(body.getLink());
@@ -49,11 +61,16 @@ public class LinksService {
             }
         }
         link.setFilters(filters);
-        // link.setLastUpdated(ZonedDateTime.of(2010, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault()));
         link.setLastUpdated(ZonedDateTime.now());
         extractSiteName(link);
-        validator.validateLink(link);
+        try {
+            validator.validateLink(link);
+        } catch (BusinessException e) {
+            kafkaDLQService.sendToDLQ(body);
+            throw e;
+        }
         repository.save(tgChatId, link);
+        cacheService.invalidateCache(tgChatId);
         return createResponse(tgChatId, link, body.getFilters(), body.getTags());
     }
 
@@ -61,10 +78,16 @@ public class LinksService {
         Link link = new Link();
         link.setUrl(body.getLink());
         repository.delete(tgChatId, link);
+        cacheService.invalidateCache(tgChatId);
         return createResponse(tgChatId, link, null, null);
     }
 
     public ListLinksResponse getLinks(Long tgChatId) {
+
+        if (cacheService.hasCachedLinks(tgChatId)) {
+            return cacheService.getUserLinksFromCache(tgChatId);
+        }
+
         Set<Link> links = repository.get(tgChatId);
         if (links == null) {
             throw new BusinessException(
@@ -78,6 +101,9 @@ public class LinksService {
             linkResponseList.add(new LinkResponse().url(link.getUrl()));
         }
         listLinksResponse.setLinks(linkResponseList);
+
+        cacheService.cacheUserLinks(tgChatId, listLinksResponse);
+
         return listLinksResponse;
     }
 
@@ -91,6 +117,10 @@ public class LinksService {
 
     public void enableTagInUpdates(Long tgChatId, boolean enableTagInUpdates) {
         repository.save(tgChatId, enableTagInUpdates);
+    }
+
+    public void enableDigest(Long tgChatId, EnableDigestRequest request) {
+        repository.save(tgChatId, request);
     }
 
     private LinkResponse createResponse(Long userId, Link link, List<String> filters, List<String> tags) {

@@ -4,22 +4,22 @@ import backend.academy.scrapper.botclient.model.LinkUpdate;
 import backend.academy.scrapper.common.exception.ScrapperException;
 import backend.academy.scrapper.links.model.ApiErrorResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
-@Service
 @Slf4j
 public class BotClient implements UpdateSender {
 
-    @Autowired
-    private WebClient botWebClient;
+    private final WebClient botWebClient;
+
+    public BotClient(WebClient botWebClient) {
+        this.botWebClient = botWebClient;
+    }
 
     public void sendUpdate(LinkUpdate linkUpdate) {
         botWebClient

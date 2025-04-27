@@ -1,9 +1,11 @@
 package backend.academy.scrapper.repository;
 
 import backend.academy.scrapper.common.exception.ScrapperException;
+import backend.academy.scrapper.links.model.EnableDigestRequest;
 import backend.academy.scrapper.repository.entity.Link;
 import backend.academy.scrapper.repository.entity.User;
 import jakarta.transaction.Transactional;
+import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -153,8 +155,39 @@ public class OrmLinkRepository implements LinkRepository {
     }
 
     @Override
+    public void save(Long tgChatId, EnableDigestRequest request) {
+        LocalTime digestTime = request.getEnableDigest() ? request.getDigestTime() : null;
+        User userToSave = jpaUserRepository
+                .findByTgChatId(tgChatId)
+                .map(existingUser -> {
+                    existingUser.setDigestTime(digestTime);
+                    return existingUser;
+                })
+                .orElseGet(() -> {
+                    User newUser = new User();
+                    newUser.setTgChatId(tgChatId);
+                    newUser.setDigestTime(digestTime);
+                    return newUser;
+                });
+
+        jpaUserRepository.save(userToSave);
+    }
+
+    @Override
     public User getUserByTgChatId(Long tgChatId) {
         var user = jpaUserRepository.findByTgChatId(tgChatId);
         return user.orElse(null);
+    }
+
+    @Override
+    public Set<User> getByEnabledDigest() {
+        List<User> users = jpaUserRepository.findAll();
+        Set<User> usersWithEnabledDigest = new HashSet<>();
+        for (var user : users) {
+            if (user.getDigestTime() != null) {
+                usersWithEnabledDigest.add(user);
+            }
+        }
+        return usersWithEnabledDigest;
     }
 }

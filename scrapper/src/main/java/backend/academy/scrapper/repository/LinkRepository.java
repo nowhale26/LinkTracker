@@ -1,5 +1,6 @@
 package backend.academy.scrapper.repository;
 
+import backend.academy.scrapper.links.model.EnableDigestRequest;
 import backend.academy.scrapper.repository.entity.Link;
 import backend.academy.scrapper.repository.entity.User;
 import java.util.List;
@@ -28,5 +29,9 @@ public interface LinkRepository {
 
     void save(Long tgchatId, boolean enableTagInUpdates);
 
+    void save(Long tgChatId, EnableDigestRequest request);
+
     User getUserByTgChatId(Long tgChatId);
+
+    Set<User> getByEnabledDigest();
 }

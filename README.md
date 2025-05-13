@@ -5,7 +5,7 @@
 ## Запуск приложения
 
 При запуске приложения в IntelliJ Idea нужно добавить 2 переменные окружения в конфигурацию запуска:
-* app.telegram-bot - Токен телеграм бота. Добавляется в переменные окружения BotApplication
+* app.telegram-token - Токен телеграм бота. Добавляется в переменные окружения BotApplication
 * app.github-token - Токен github api. Добавляется в переменные окружения ScrapperApplication
 
 Также для работы с БД нужно запустить файл docker-compose postgres.yaml.
